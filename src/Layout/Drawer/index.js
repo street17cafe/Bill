@@ -17,7 +17,7 @@ import Person from '@material-ui/icons/Person'
 import FolderSpecial from '@material-ui/icons/FolderSpecial'
 import Restaurant from '@material-ui/icons/Restaurant'
 import AttachMoney from '@material-ui/icons/AttachMoney'
-import Category from '@material-ui/icons/Category'
+import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import ExitToApp from '@material-ui/icons/ExitToApp'
 
 const drawerWidth = 240;
@@ -25,18 +25,18 @@ const drawerWidth = 240;
 const navigation = [
   {
     label: "Home",
-    path: "/",
+    path: "/home",
     icon: Home
   },
   {
-    label: "Category",
-    path: "/category",
-    icon: Category
+    label: "Menu",
+    path: "/menu",
+    icon: Restaurant
   },
   {
-    label: "Dish",
-    path: "/dish",
-    icon: Restaurant
+    label: "Cart",
+    path: "/cart",
+    icon: ShoppingCart
   },
   {
     label: "Bill",
@@ -94,7 +94,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function PermanentDrawerLeft(props) {
   const classes = useStyles();
-
   function renderAuth() {
     if(AuthService.isLoggedIn()){
       return (
@@ -148,7 +147,7 @@ export default function PermanentDrawerLeft(props) {
         <List>
           {navigation.map(item => (
             <Link key={item.label} to={item.path} className={classes.link}>
-              <ListItem button >
+              <ListItem button>
                 <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
                 <ListItemText primary={item.label} />
               </ListItem>
