@@ -5,6 +5,7 @@ import VerticalNav from './VerticalNav'
 import { withRouter } from 'react-router-dom'
 import { fetchAllDishes, groupDishes } from '../Common'
 import ConfirmServing from './Modals/ConfirmServing'
+import { addItem, removeItem } from '../../Store/actions/Cart'
 
 class AllDishes extends React.Component {
   state = {
@@ -46,6 +47,7 @@ class AllDishes extends React.Component {
 
   deleteClick = (id) => {
     console.log(id)
+    this.props.removeItem(id)
   }
 
   handleConfirmClose = () => {
@@ -71,8 +73,8 @@ class AllDishes extends React.Component {
   handleQuantityChange = e => {
     let l = e.target.value
     this.setState(prevState => ({
-      confirm: {
-        ...prevState.confirm,
+      modal: {
+        ...prevState.modal,
         quantity: l
       }
     }))
@@ -80,11 +82,19 @@ class AllDishes extends React.Component {
 
   handleConfirmationSubmit = e => {
     //get the item id, size, qunatity
+    let price = -1
+    this.state.modal.item.serving.forEach(serving => {
+      
+      if(serving.size === this.state.modal.value)
+        price = serving.price
+    })
     let item = {
       id: new Date().getTime(),
-      itemId: this.state.modal.item._id,
+      _id: this.state.modal.item._id,
       size: this.state.modal.value,
-      quantity: this.state.modal.quantity
+      quantity: this.state.modal.quantity,
+      name: this.state.modal.item.name,
+      price
     }
     this.setState({
       modal: {
@@ -93,7 +103,7 @@ class AllDishes extends React.Component {
         quantity: 1
       }
     })
-    console.log(item)
+    this.props.addItem(item)
   }
 
   render = () => {
@@ -122,7 +132,9 @@ class AllDishes extends React.Component {
 const mapDispatchToProps = dispatch => ({
 
   snackbarSuccess: message => dispatch(snackbarSuccess(message)),
-  snackbarError: message => dispatch(snackbarError(message))
+  snackbarError: message => dispatch(snackbarError(message)),
+  addItem: (item) => dispatch(addItem(item)),
+  removeItem: id => dispatch(removeItem(id))
 
 })
 

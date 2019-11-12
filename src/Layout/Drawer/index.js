@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom'
 import Drawer from '@material-ui/core/Drawer';
@@ -92,6 +92,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
+function Nav(props) {
+  let [activeIndex, setActiveIndex] = useState(0)
+  return(
+    <List>
+      {navigation.map((item, index) => (
+            <Link key={item.label} to={item.path} className={props.classes.link} onClick={() => setActiveIndex(index)}>
+              <ListItem button selected={activeIndex===index}>
+                <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItem>
+            </Link>
+          ))}
+        </List>
+  )
+}
+
 export default function PermanentDrawerLeft(props) {
   const classes = useStyles();
   function renderAuth() {
@@ -144,16 +161,7 @@ export default function PermanentDrawerLeft(props) {
       >
         <div className={classes.toolbar} />
         <Divider />
-        <List>
-          {navigation.map(item => (
-            <Link key={item.label} to={item.path} className={classes.link}>
-              <ListItem button>
-                <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            </Link>
-          ))}
-        </List>
+        <Nav classes={classes}/>
         <Divider />
         <List>
           {renderAuth()}

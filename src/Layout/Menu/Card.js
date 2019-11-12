@@ -8,7 +8,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add'
-import Delete from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles({
   media: {
@@ -45,9 +44,7 @@ export default function MediaCard(props) {
         <Button size="small" color="primary" variant="contained" onClick={() => props.addClick(props.id)}>
           <Add className={classes.icon}/> Add
         </Button>
-        <Button size="small" color="primary" onClick={() => props.deleteClick(props.id)}>
-          <Delete className={classes.icon}/> delete
-        </Button>
+        
       </CardActions>
     </Card>
   );

@@ -4,6 +4,7 @@ import Drawer from './Drawer'
 import Auth from './Auth'
 import ProtectedRoute from '../Enhancements/ProtectedRoute'
 import Menu from './Menu'
+import Cart from './Cart'
 
 const Layout = props => {
   return (
@@ -11,6 +12,7 @@ const Layout = props => {
       <Switch>
         <Route path="/auth/:auth_action" component={Auth} />
         <ProtectedRoute path="/menu" component={Menu} />
+        <ProtectedRoute path="/cart" component={Cart} />
       </Switch>
     </Drawer>
   )
