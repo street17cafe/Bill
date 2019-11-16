@@ -25,27 +25,27 @@ const drawerWidth = 240;
 const navigation = [
   {
     label: "Home",
-    path: "/home",
+    path: "/frontend",
     icon: Home
   },
   {
     label: "Menu",
-    path: "/menu",
+    path: "/frontend/menu",
     icon: Restaurant
   },
   {
     label: "Cart",
-    path: "/cart",
+    path: "/frontend/cart",
     icon: ShoppingCart
   },
   {
     label: "Bill",
-    path: "/bill",
+    path: "/frontend/bill",
     icon: AttachMoney
   },
   {
     label: "Special",
-    path: "/special",
+    path: "/frontend/special",
     icon: FolderSpecial
   }
 ]
@@ -53,11 +53,11 @@ const navigation = [
 const auth = [
   {
     label: "Login",
-    path: "/auth/login"
+    path: "/frontend/auth/login"
   },
   {
     label: "Register",
-    path: "/auth/register"
+    path: "/frontend/auth/register"
   }
 ]
 
@@ -94,18 +94,18 @@ const useStyles = makeStyles(theme => ({
 
 
 function Nav(props) {
-  let [activeIndex, setActiveIndex] = useState(0)
+  let [activeIndex, setActiveIndex] = useState(props.activeIndex)
   return(
     <List>
       {navigation.map((item, index) => (
-            <Link key={item.label} to={item.path} className={props.classes.link} onClick={() => setActiveIndex(index)}>
-              <ListItem button selected={activeIndex===index}>
-                <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            </Link>
-          ))}
-        </List>
+        <Link key={item.label} to={item.path} className={props.classes.link} onClick={() => setActiveIndex(index)}>
+          <ListItem button selected={activeIndex===index}>
+            <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItem>
+          </Link>
+        ))}
+    </List>
   )
 }
 
@@ -121,8 +121,8 @@ export default function PermanentDrawerLeft(props) {
             <ListItemText primary={AuthService.getUsername()} />
           </ListItem>
           
-          <Link className={classes.link} to="/auth/logout">
-            <ListItem button>
+          <Link className={classes.link} to="/frontend/auth/logout">
+            <ListItem button onClick={() => window.location.reload()}>
               <ListItemIcon><ExitToApp /></ListItemIcon>
               <ListItemText primary={'Logout'}/>
             </ListItem>
@@ -141,6 +141,16 @@ export default function PermanentDrawerLeft(props) {
       ))
     )
   }
+
+  let activeIndex = 0;
+  navigation.forEach((item, index) => {
+    
+    if(index === 0)
+      return
+    if(window.location.href.indexOf(item.path) !== -1){
+      activeIndex = index
+    }
+  })
 
   return (
     <div className={classes.root}>
@@ -161,7 +171,7 @@ export default function PermanentDrawerLeft(props) {
       >
         <div className={classes.toolbar} />
         <Divider />
-        <Nav classes={classes}/>
+        <Nav classes={classes} activeIndex={activeIndex}/>
         <Divider />
         <List>
           {renderAuth()}

@@ -87,12 +87,12 @@ export default function VerticalTabs(props) {
           <TabPanel value={value} index={index} key={index} className={classes.panel}>
             <Grid container spacing={1} className={classes.container}>
               {
-                group.items.map(dish => <Grid item xs={6} key={dish._id}>
+                group.items.map(dish => <Grid item xs={6} key={dish.id}>
                   <Card
                     image={dish.image}
                     description={dish.description}
                     name={dish.name}
-                    id={dish._id}
+                    id={dish.id}
                     addClick={(id) => props.addClick(index, id)}
                     deleteClick={props.deleteClick}
                   />

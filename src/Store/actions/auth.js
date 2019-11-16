@@ -10,21 +10,23 @@ export const login = (dispatch, data) => {
   fetchAPI('/api/auth/login', data, '', 'POST')
     .then(res => {
       console.log(res.data)
-      if(res.data.token === undefined){
+      if(res.data.success === false){
         throw new Error({message: "Unable to login"})
       }else{
+        console.log("Data: ", res.data)
         dispatch(loggedIn(res.data))
         Auth.logUserIn({
           username: data.username,
-          token: res.data.token,
+          token: res.data.data.token,
           isLoggedIn: true
         })
         dispatch(snackbarSuccess("Logged In"))
       }
     })
     .catch(err => {
-      console.log(err.response.data.message)
-      dispatch(snackbarError(err.response.data.message || err.message))
+      console.error(err)
+      //console.log(err.response.data.message)
+      dispatch(snackbarError(err.response.data.errors.message || err.message))
     })
 }
 
@@ -48,6 +50,7 @@ export const register = (dispatch, data) => {
         throw new Error({message: "Unable to register"})
       }else{
         dispatch(loggedIn(res.data))
+        console.log("Data: ", res.data)
         Auth.logUserIn({
           username: data.username,
           token: res.data.token,
@@ -57,8 +60,10 @@ export const register = (dispatch, data) => {
       }
     })
     .catch(err => {
-      console.log(err.response.data.message)
-      dispatch(snackbarError(err.response.data.message || err.message))
+      console.error("Error: ", err.response)
+      console.error("Error: ", err);
+      //console.log(err.response.data.message)
+      //dispatch(snackbarError(err.response.data.errors.message || err.message))
     })
 }
 

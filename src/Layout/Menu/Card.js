@@ -27,13 +27,13 @@ export default function MediaCard(props) {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={"http://localhost:3002"+props.image}
+          image={"http://localhost:8000"+props.image}
           title="Contemplative Reptile"
           img={props.image}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2" noWrap={true}>
-            {props.name}
+            {props.label}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {props.description.length > 100 ? props.description.substr(0, 97)+'...' : props.description}

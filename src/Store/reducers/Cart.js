@@ -16,6 +16,12 @@ const CartReducer = (state = initialState.Cart, action) => {
           ...state,
           items: state.items.filter(item => item.id !== action.id)
         }
+      
+      case "CART::EMPTY":
+        return {
+          ...state,
+          items: []
+        }
 
       default:
         return state

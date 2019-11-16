@@ -23,7 +23,7 @@ class AllDishes extends React.Component {
       if(err){
         this.props.snackbarError(data.message)
       }
-      this.setState({data: groupDishes(data.data)})
+      this.setState({data: groupDishes(data.data.data)})
     })
   }
 
@@ -31,7 +31,7 @@ class AllDishes extends React.Component {
     let item = {}
 
     for(let j = 0; j < this.state.data[groupIndex].items.length; j++){
-      if(this.state.data[groupIndex].items[j]._id === id){
+      if(this.state.data[groupIndex].items[j].id === id){
         item = this.state.data[groupIndex].items[j]
         break
       }
@@ -90,7 +90,7 @@ class AllDishes extends React.Component {
     })
     let item = {
       id: new Date().getTime(),
-      _id: this.state.modal.item._id,
+      _id: this.state.modal.item.id,
       size: this.state.modal.value,
       quantity: this.state.modal.quantity,
       name: this.state.modal.item.name,
@@ -107,6 +107,7 @@ class AllDishes extends React.Component {
   }
 
   render = () => {
+    console.log(this.state)
     return (
       <React.Fragment>
         <VerticalNav 

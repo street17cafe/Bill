@@ -4,6 +4,7 @@ import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Bu
 
 const RadioGroupCustom = prop => {
   const { props } = prop;
+  console.log("Serving", props.item.serving);
   return <FormControl component="fieldset">
   <FormLabel component="legend">Serving</FormLabel>
   <RadioGroup aria-label="serving" name="serving" value={props.value} onChange={e => props.onServingSizeChange(e)}>
@@ -41,7 +42,7 @@ export default function ConfirmServing(props){
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{props.item.name}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{props.item.label}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {props.item && props.item.description}

@@ -12,7 +12,7 @@ const Auth = {
   logUserIn: data => {
 
     localStorage.setItem('auth', JSON.stringify(data))
-    window.location = "/"
+    window.location = "/frontend"
 
   },
 

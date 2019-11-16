@@ -9,3 +9,7 @@ export const removeItem = id => ({
   type: PAGE+"REMOVE",
   id
 })
+
+export const emptyCart = () => ({
+  type: PAGE+"EMPTY"
+})

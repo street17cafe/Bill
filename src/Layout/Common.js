@@ -5,10 +5,10 @@ export const groupDishes = (data) => {
     return
   let items = {};
   for(let i = 0; i < data.length; i++){
-    if(items[data[i].category] === undefined){
-      items[data[i].category] = []
+    if(items[data[i].category_id] === undefined){
+      items[data[i].category_id] = []
     }
-    items[data[i].category].push(data[i])
+    items[data[i].category_id].push(data[i])
   }
 
   let processed = []
