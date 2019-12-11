@@ -21,19 +21,19 @@ const useStyles = makeStyles({
 
 export default function MediaCard(props) {
   const classes = useStyles();
-
+  console.log(props)
   return (
     <Card className={classes.card}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
           image={"http://localhost:8000"+props.image}
-          title="Contemplative Reptile"
+          title={props.name}
           img={props.image}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2" noWrap={true}>
-            {props.label}
+            {props.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {props.description.length > 100 ? props.description.substr(0, 97)+'...' : props.description}

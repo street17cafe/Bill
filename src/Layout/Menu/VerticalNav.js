@@ -91,7 +91,7 @@ export default function VerticalTabs(props) {
                   <Card
                     image={dish.image}
                     description={dish.description}
-                    name={dish.name}
+                    name={dish.label}
                     id={dish.id}
                     addClick={(id) => props.addClick(index, id)}
                     deleteClick={props.deleteClick}

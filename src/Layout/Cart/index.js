@@ -30,7 +30,7 @@ const makeText = item => {
 function Cart(props) {
 
   const classes = useStyles()
-
+  console.log(props.Cart)
   return (
     <div className={classes.container}>
       <List className={classes.root}>

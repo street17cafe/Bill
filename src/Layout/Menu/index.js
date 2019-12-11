@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { snackbarSuccess, snackbarError } from '../../Store/actions/snackbar'
+import { snackbarSuccess, snackbarError, snackbarInfo } from '../../Store/actions/snackbar'
 import VerticalNav from './VerticalNav'
 import { withRouter } from 'react-router-dom'
 import { fetchAllDishes, groupDishes } from '../Common'
@@ -19,11 +19,15 @@ class AllDishes extends React.Component {
   }
 
   componentDidMount = () => {
-    fetchAllDishes((err, data) => {
+    fetchAllDishes((err, response) => {
       if(err){
-        this.props.snackbarError(data.message)
+        console.log(err.response || err);
+        return this.props.snackbarError("Error occured to fetch dishes")
       }
-      this.setState({data: groupDishes(data.data.data)})
+      if(response.data.data.length === 0){
+        return this.props.snackbarInfo("You have 0 dishes. Create some to view")
+      }
+      this.setState({data: groupDishes(response.data.data)})
     })
   }
 
@@ -93,7 +97,7 @@ class AllDishes extends React.Component {
       _id: this.state.modal.item.id,
       size: this.state.modal.value,
       quantity: this.state.modal.quantity,
-      name: this.state.modal.item.name,
+      name: this.state.modal.item.label,
       price
     }
     this.setState({
@@ -134,6 +138,7 @@ const mapDispatchToProps = dispatch => ({
 
   snackbarSuccess: message => dispatch(snackbarSuccess(message)),
   snackbarError: message => dispatch(snackbarError(message)),
+  snackbarInfo: message => dispatch(snackbarInfo(message)),
   addItem: (item) => dispatch(addItem(item)),
   removeItem: id => dispatch(removeItem(id))
 

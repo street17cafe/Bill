@@ -16,6 +16,8 @@ export default function fetchAPI(endpoint, payload, headers, method = 'get'){
       axiosConfig.data = payload
   }
 
-  return axios(`${BACKEND_URL}${endpoint}`, axiosConfig)
+  //console.log("URL: ", process.env.PUBLIC_URL)
 
+  return axios(`${BACKEND_URL}${endpoint}`, axiosConfig)
+  //return axios(`${endpoint}`, axiosConfig)
 }

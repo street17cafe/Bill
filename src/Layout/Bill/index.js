@@ -37,13 +37,14 @@ const useStyles = makeStyles(theme => ({
 
 
 
-function calculateTotal(data, donation=0){
+function calculateTotal(data, donation=0, discount=0){
   let total = 0
   if(isNaN(donation))
     donation = 0
   if(data === undefined || data.length === 0)
     return []
   data.forEach(item => total+=(item.price * item.quantity))
+  console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, Math.round(2 * total * 2.5)/100, donation, (Math.round(total * discount)/100))
   return ([
     {
       label: 'SubTotal',
@@ -62,8 +63,12 @@ function calculateTotal(data, donation=0){
       value: donation
     },
     {
+      label: 'Discount',
+      value: discount+'%'
+    },
+    {
       label: 'Total',
-      value: total + 2 * Math.round(total * 2.5)/100 + donation
+      value: Math.round((total + (2 * total * 2.5) + donation - (total * discount/100))*100)/100
     }
   ])
 }
@@ -76,21 +81,24 @@ function submitBill(items, donation=0, props){
     .then(res => {
       console.log(res.data, res.data.success)
       if(res.data.success){
-        console.log("Hello")
         props.emptyCart()
         props.snackbarSuccess("Bill submitted")
-        props.history.push('/menu')
+        props.history.push('/frontend/menu')
       }
       console.log(res.data)
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err.response)
+      props.snackbarError("Unable to save dish")
+    })
 }
 
 function Bill(props) {
 
   let [donation, setDonation] = useState(0)
+  let [discount, setDiscount] = useState(0)
   const classes = useStyles()
-  const rows = calculateTotal(props.Cart.items, parseInt(donation))
+  const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
 
   return (
     <Grid container spacing={2} className={classes.container}>
@@ -113,6 +121,23 @@ function Bill(props) {
                 startAdornment: (
                   <InputAdornment position="start">
                     ₹
+                  </InputAdornment>
+                ),
+              }}
+              />
+          </div>
+          <div className={classes.row}>
+            <TextField 
+              label={'Discount percentage'} 
+              type="number" 
+              fullWidth 
+              value={discount} 
+              autoFocus={true}
+              onChange={(e) => setDiscount(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    %
                   </InputAdornment>
                 ),
               }}
