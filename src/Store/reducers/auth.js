@@ -19,7 +19,7 @@ const AuthReducer = (state = initialState.Auth, action) => {
       }
     
 
-    case "AUTH::LOGGEDIN":
+    case "AUTH::SUCCESS":
       return {
         ...state,
         isChecking: false,
@@ -34,7 +34,6 @@ const AuthReducer = (state = initialState.Auth, action) => {
         isLoggedIn:false,
         isChecking: false,
         token: "",
-        error: action.data.message
       }
 
     default:

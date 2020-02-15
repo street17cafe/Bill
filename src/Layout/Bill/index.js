@@ -12,7 +12,9 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[1]
+    boxShadow: theme.shadows[1],
+    position: 'relative',
+    overflow: "auto"
   },
   container: {
     flexGrow: 1,
@@ -31,6 +33,10 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     padding: theme.spacing(2)
+  },
+  table: {
+    width: '100%',
+    overflow: 'auto'
   }
 }));
 
@@ -41,10 +47,12 @@ function calculateTotal(data, donation=0, discount=0){
   let total = 0
   if(isNaN(donation))
     donation = 0
+  if(isNaN(discount))
+    discount = 0
   if(data === undefined || data.length === 0)
     return []
   data.forEach(item => total+=(item.price * item.quantity))
-  console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, Math.round(2 * total * 2.5)/100, donation, (Math.round(total * discount)/100))
+  console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, donation, (Math.round(total * discount)/100))
   return ([
     {
       label: 'SubTotal',
@@ -68,16 +76,18 @@ function calculateTotal(data, donation=0, discount=0){
     },
     {
       label: 'Total',
-      value: Math.round((total + (2 * total * 2.5) + donation - (total * discount/100))*100)/100
+      value: Math.round((total + (2 * total * 0.025) + donation - (total * discount/100))*100)/100
     }
   ])
 }
 
-function submitBill(items, donation=0, props){
+function submitBill(items, donation=0, discount=0, props){
   if(isNaN(donation))
     donation = 0
+  if(isNaN(discount))
+    discount = 0
   console.log(items);
-  API('/api/bill', {items, donation: 100}, '', 'POST')
+  API('/api/bill', {items, donation, discount}, '', 'POST')
     .then(res => {
       console.log(res.data, res.data.success)
       if(res.data.success){
@@ -102,9 +112,9 @@ function Bill(props) {
 
   return (
     <Grid container spacing={2} className={classes.container}>
-      <Grid item xs={8}>
+      <Grid item xs={12} sm={8}>
         <div className={classes.root}>
-          <Table>
+          <Table className={classes.table}>
           <caption>Dishes selected for the order</caption>
             <GenerateHead head={['Sl no', 'Dish', 'Price', 'Quanity', 'Total']} classes={classes}/>
             <GenerateBody body={props.Cart.items}/>
@@ -145,7 +155,7 @@ function Bill(props) {
           </div>
         </div>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item sm={4} xs={12}>
         <div className={classes.root}>
           <Typography variant="h5" className={classes.row}>Amount</Typography>
           {
@@ -157,7 +167,7 @@ function Bill(props) {
             )
           }
           <div className={classes.row}>
-            <Button fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, props)}>Print Bill</Button>
+            <Button fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, discount, props)}>Print Bill</Button>
           </div>
         </div>
       </Grid>

@@ -1,6 +1,7 @@
 import { snackbarSuccess, snackbarError } from './snackbar'
 import fetchAPI from '../../Services/API'
 import Auth from '../../Services/AuthService'
+import ErrorHandler from '../../Services/ErrorHandler'
 
 
 const PAGE = "AUTH::"
@@ -14,19 +15,21 @@ export const login = (dispatch, data) => {
         throw new Error({message: "Unable to login"})
       }else{
         console.log("Data: ", res.data)
-        dispatch(loggedIn(res.data))
         Auth.logUserIn({
           username: data.username,
           token: res.data.data.token,
           isLoggedIn: true
         })
         dispatch(snackbarSuccess("Logged In"))
+        dispatch(loggedIn(res.data))
+        console.log(res.data)
       }
     })
     .catch(err => {
       console.error(err)
       //console.log(err.response.data.message)
-      dispatch(snackbarError(err.response.data.errors.message || err.message))
+      dispatch(snackbarError(ErrorHandler(err)))
+      dispatch(error())
     })
 }
 
@@ -37,8 +40,12 @@ const initiateLogin = (data) => ({
 )
 
 const loggedIn = (data) => ({
-  type: PAGE+"LOGGEDIN",
+  type: PAGE+"SUCCESS",
   data
+})
+
+const error = data => ({
+  type: PAGE+"ERROR"
 })
 
 export const register = (dispatch, data) => {

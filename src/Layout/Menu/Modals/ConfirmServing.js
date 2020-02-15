@@ -4,7 +4,7 @@ import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Bu
 
 const RadioGroupCustom = prop => {
   const { props } = prop;
-  console.log("Serving", props.item.serving);
+  //console.log("Serving", props.item.serving);
   return <FormControl component="fieldset">
   <FormLabel component="legend">Serving</FormLabel>
   <RadioGroup aria-label="serving" name="serving" value={props.value} onChange={e => props.onServingSizeChange(e)}>

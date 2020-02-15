@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom'
-import Drawer from '@material-ui/core/Drawer';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -11,7 +11,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Home from '@material-ui/icons/Home'
-import { Icon } from '@material-ui/core';
+import { Icon, IconButton } from '@material-ui/core';
 import AuthService from '../../Services/AuthService'
 import Person from '@material-ui/icons/Person'
 import FolderSpecial from '@material-ui/icons/FolderSpecial'
@@ -19,6 +19,7 @@ import Restaurant from '@material-ui/icons/Restaurant'
 import AttachMoney from '@material-ui/icons/AttachMoney'
 import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import ExitToApp from '@material-ui/icons/ExitToApp'
+import Menu from '@material-ui/icons/Menu'
 
 const drawerWidth = 240;
 
@@ -67,8 +68,8 @@ const useStyles = makeStyles(theme => ({
     width: "100%"
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    width: window.innerWidth > 1000 ? `calc(100% - ${drawerWidth}px)`:`100%`,
+    marginLeft: window.innerWidth > 1000 ? drawerWidth : 0
   },
   drawer: {
     width: drawerWidth,
@@ -76,6 +77,9 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
+  },
+  icon: {
+    fill: '#fff'
   },
   toolbar: theme.mixins.toolbar,
   content: {
@@ -89,6 +93,9 @@ const useStyles = makeStyles(theme => ({
   },
   contain: {
     width:'100%'
+  },
+  headerText: {
+    flex: 1
   }
 }));
 
@@ -99,7 +106,7 @@ function Nav(props) {
     <List>
       {navigation.map((item, index) => (
         <Link key={item.label} to={item.path} className={props.classes.link} onClick={() => setActiveIndex(index)}>
-          <ListItem button selected={activeIndex===index}>
+          <ListItem button selected={activeIndex===index} onClick={props.onClick}>
             <ListItemIcon>{<Icon component={item.icon} />}</ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItem>
@@ -111,6 +118,8 @@ function Nav(props) {
 
 export default function PermanentDrawerLeft(props) {
   const classes = useStyles();
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
   function renderAuth() {
     if(AuthService.isLoggedIn()){
       return (
@@ -156,14 +165,25 @@ export default function PermanentDrawerLeft(props) {
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" noWrap>
+          <IconButton onClick={() => setDrawerOpen(true)}>
+            <Menu className={classes.icon}/>
+          </IconButton>
+          <Typography variant="h6" noWrap className={classes.headerText}>
             Street 17
           </Typography>
+          <Link to={process.env.REACT_APP_BASE_URL+"/cart"}>
+            <IconButton>
+              <ShoppingCart className={classes.icon} />
+            </IconButton>
+          </Link>
         </Toolbar>
       </AppBar>
-      <Drawer
+      <SwipeableDrawer
+        open={drawerOpen}
         className={classes.drawer}
-        variant="permanent"
+        variant={window.innerWidth > 1000 ? "permanent" : "temporary"}
+        onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -171,12 +191,12 @@ export default function PermanentDrawerLeft(props) {
       >
         <div className={classes.toolbar} />
         <Divider />
-        <Nav classes={classes} activeIndex={activeIndex}/>
+        <Nav classes={classes} activeIndex={activeIndex} onClick={() => setDrawerOpen(false)}/>
         <Divider />
         <List>
           {renderAuth()}
         </List>
-      </Drawer>
+      </SwipeableDrawer>
       <div className={classes.contain}>
         <div className={classes.toolbar} />
         {props.children}

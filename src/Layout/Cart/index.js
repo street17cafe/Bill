@@ -5,6 +5,7 @@ import RestaurantMenu from '@material-ui/icons/RestaurantMenu'
 import Close from '@material-ui/icons/Close'
 import {makeStyles } from '@material-ui/core/styles'
 import { removeItem } from '../../Store/actions/Cart'
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,9 +60,9 @@ function Cart(props) {
           );
         })
       }
-      <ListItem className={classes.buttonHolder}>
+      <Link className={classes.buttonHolder} to={'/frontend/bill'}>
         <Button variant="contained" color="primary">Generate Bill</Button>
-      </ListItem>
+      </Link>
       </List>
     </div>
   )

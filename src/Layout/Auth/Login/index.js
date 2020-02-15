@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import { Grid, Paper, TextField, Button, FormControl, Typography } from '@material-ui/core'
+import { Grid, Paper, TextField, FormControl, Typography } from '@material-ui/core'
+import LoadingButton from '../../../Enhancements/LoadingButton'
 import { makeStyles } from '@material-ui/core/styles'
 import { login } from '../../../Store/actions/auth'
 import { connect } from 'react-redux'
@@ -32,6 +33,8 @@ function Login(props) {
     })
   }
 
+  console.log(props.Auth)
+
   const classes = styles()
   return (
     <Grid container className={classes.root}justify={'center'}>
@@ -58,7 +61,7 @@ function Login(props) {
             />
           </FormControl>
           <FormControl fullWidth>
-            <Button type="submit" variant="contained" color="primary">Log in</Button>
+            <LoadingButton fullWidth isLoading={props.Auth.isChecking} type="submit" variant="contained" color="primary">Log in</LoadingButton>
           </FormControl>
         </Paper>
       </Grid>
@@ -66,9 +69,12 @@ function Login(props) {
   )
 }
 
-
-const mapDispatchToProps = dispatch => ({
-  login: (data) => dispatch(dispatch => login(dispatch, data))
+const mapStateToProps = state => ({
+  Auth: state.Auth
 })
 
-export default connect(null, mapDispatchToProps)(Login)
+const mapDispatchToProps = dispatch => ({
+  login: (data) => login(dispatch, data)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

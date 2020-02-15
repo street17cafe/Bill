@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import Snackbar from './snackbar'
 import Auth from './auth'
 import Cart from './Cart'
+import Dish from './Dish'
 
 export const initialState = {
   Snackbar: {
@@ -19,13 +20,19 @@ export const initialState = {
   },
   Cart: {
     items: []
+  },
+  Dish: {
+    data: [],
+    isFetching: false,
+    error: true
   }
 }
 
 const reducers = combineReducers({
   Snackbar,
   Auth,
-  Cart
+  Cart,
+  Dish
 })
 
 export default reducers;

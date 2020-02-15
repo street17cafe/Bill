@@ -1,42 +1,41 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import { snackbarSuccess, snackbarError, snackbarInfo } from '../../Store/actions/snackbar'
+import { fetchDishes } from '../../Store/actions/Dish'
 import VerticalNav from './VerticalNav'
 import { withRouter } from 'react-router-dom'
-import { fetchAllDishes, groupDishes } from '../Common'
 import ConfirmServing from './Modals/ConfirmServing'
 import { addItem, removeItem } from '../../Store/actions/Cart'
+import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
+import Loading from '../../Enhancements/Loading'
 
 class AllDishes extends React.Component {
   state = {
     data: [],
-    dishes: {},
     modal: {
       open: false,
       value: 'R',
       quantity: 1
-    }
+    },
+    renderImages: false
   }
 
   componentDidMount = () => {
-    fetchAllDishes((err, response) => {
-      if(err){
-        console.log(err.response || err);
-        return this.props.snackbarError("Error occured to fetch dishes")
-      }
-      if(response.data.data.length === 0){
-        return this.props.snackbarInfo("You have 0 dishes. Create some to view")
-      }
-      this.setState({data: groupDishes(response.data.data)})
-    })
+    if(this.props.Dish.data.length > 0){
+      this.setState({data: this.props.Dish.dishes})
+      return;
+    }
+    this.props.fetchDishes();
   }
 
   addClick = (groupIndex, id) => {
     let item = {}
-
-    for(let j = 0; j < this.state.data[groupIndex].items.length; j++){
-      if(this.state.data[groupIndex].items[j].id === id){
-        item = this.state.data[groupIndex].items[j]
+    let dishes = this.props.Dish.data
+    console.log(groupIndex, id)
+    for(let j = 0; j < dishes[groupIndex].items.length; j++){
+      if(dishes[groupIndex].items[j].id === id){
+        item = dishes[groupIndex].items[j]
         break
       }
     }
@@ -110,29 +109,45 @@ class AllDishes extends React.Component {
     this.props.addItem(item)
   }
 
+  switchChange = e => {
+    this.setState(prevState => ({
+      renderImages: !prevState.renderImages
+    }))
+  }
+
   render = () => {
-    console.log(this.state)
+    //console.log(this.state)
+
     return (
-      <React.Fragment>
-        <VerticalNav 
-          data={this.state.data}
-          addClick={this.addClick}
-          deleteClick={this.deleteClick}
-        />
-        {
-          this.state.modal.open && 
-          <ConfirmServing 
-            handleClose={this.handleConfirmClose}
-            {...this.state.modal}
-            handleQuantityChange={this.handleQuantityChange}
-            onServingSizeChange={this.onServingSizeChange}
-            handleSubmit={this.handleConfirmationSubmit}
+      <Grid container>
+        <Grid item xs={12} style={{minHeight: "400px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+          <Loading isLoading={this.props.Dish.isFetching}>
+            <VerticalNav 
+              data={this.props.Dish.data}
+              addClick={this.addClick}
+              deleteClick={this.deleteClick}
+              renderImages={this.state.renderImages}
             />
-        }
-      </React.Fragment>
+            {
+              this.state.modal.open && 
+              <ConfirmServing 
+                handleClose={this.handleConfirmClose}
+                {...this.state.modal}
+                handleQuantityChange={this.handleQuantityChange}
+                onServingSizeChange={this.onServingSizeChange}
+                handleSubmit={this.handleConfirmationSubmit}
+                />
+            }
+            </Loading>
+        </Grid>
+      </Grid>
     )
   }
 }
+
+const mapStateToProps = state => ({
+  Dish: state.Dish
+})
 
 const mapDispatchToProps = dispatch => ({
 
@@ -140,8 +155,8 @@ const mapDispatchToProps = dispatch => ({
   snackbarError: message => dispatch(snackbarError(message)),
   snackbarInfo: message => dispatch(snackbarInfo(message)),
   addItem: (item) => dispatch(addItem(item)),
-  removeItem: id => dispatch(removeItem(id))
-
+  removeItem: id => dispatch(removeItem(id)),
+  fetchDishes: data => fetchDishes(dispatch, data)
 })
 
-export default withRouter(connect(null, mapDispatchToProps)(AllDishes))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllDishes))
