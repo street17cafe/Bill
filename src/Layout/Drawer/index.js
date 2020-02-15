@@ -35,9 +35,9 @@ const navigation = [
     icon: Restaurant
   },
   {
-    label: "Cart",
-    path: "/frontend/cart",
-    icon: ShoppingCart
+    label: "Special",
+    path: "/frontend/special",
+    icon: FolderSpecial
   },
   {
     label: "Bill",
@@ -45,9 +45,9 @@ const navigation = [
     icon: AttachMoney
   },
   {
-    label: "Special",
-    path: "/frontend/special",
-    icon: FolderSpecial
+    label: "Previous Bills",
+    path: "/frontend/previous",
+    icon: ShoppingCart
   }
 ]
 
