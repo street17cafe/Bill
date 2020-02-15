@@ -3,6 +3,7 @@ import Snackbar from './snackbar'
 import Auth from './auth'
 import Cart from './Cart'
 import Dish from './Dish'
+import Bills from './Bill'
 
 export const initialState = {
   Snackbar: {
@@ -25,6 +26,11 @@ export const initialState = {
     data: [],
     isFetching: false,
     error: true
+  },
+  Bills: {
+    isFetching: false,
+    error: false,
+    data: []
   }
 }
 
@@ -32,7 +38,8 @@ const reducers = combineReducers({
   Snackbar,
   Auth,
   Cart,
-  Dish
+  Dish,
+  Bills
 })
 
 export default reducers;

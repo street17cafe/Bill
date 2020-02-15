@@ -110,7 +110,6 @@ function RenderDishDetails(props){
   if(props.renderImages === undefined){
     return null;
   }
-  const {dish} = props
   if(props.renderImages) {
     return (
       <React.Fragment>

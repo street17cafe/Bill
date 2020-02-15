@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { snackbarSuccess, snackbarError, snackbarInfo } from '../../Store/actions/snackbar'
 import { fetchDishes } from '../../Store/actions/Dish'
@@ -6,7 +6,6 @@ import VerticalNav from './VerticalNav'
 import { withRouter } from 'react-router-dom'
 import ConfirmServing from './Modals/ConfirmServing'
 import { addItem, removeItem } from '../../Store/actions/Cart'
-import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Loading from '../../Enhancements/Loading'
 
@@ -23,7 +22,7 @@ class AllDishes extends React.Component {
 
   componentDidMount = () => {
     if(this.props.Dish.data.length > 0){
-      this.setState({data: this.props.Dish.dishes})
+      //this.setState({data: this.props.Dish.dishes})
       return;
     }
     this.props.fetchDishes();
