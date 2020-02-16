@@ -20,33 +20,35 @@ import AttachMoney from '@material-ui/icons/AttachMoney'
 import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import ExitToApp from '@material-ui/icons/ExitToApp'
 import Menu from '@material-ui/icons/Menu'
+import Badge from '@material-ui/core/Badge'
+import { connect } from 'react-redux'
 
 const drawerWidth = 240;
 
 const navigation = [
   {
     label: "Home",
-    path: "/frontend",
+    path: process.env.REACT_APP_BASE_URL+"",
     icon: Home
   },
   {
     label: "Menu",
-    path: "/frontend/menu",
+    path: process.env.REACT_APP_BASE_URL+"/menu",
     icon: Restaurant
   },
   {
     label: "Special",
-    path: "/frontend/special",
+    path: process.env.REACT_APP_BASE_URL+"/special",
     icon: FolderSpecial
   },
   {
     label: "Bill",
-    path: "/frontend/bill",
+    path: process.env.REACT_APP_BASE_URL+"/bill",
     icon: AttachMoney
   },
   {
     label: "Previous Bills",
-    path: "/frontend/previous",
+    path: process.env.REACT_APP_BASE_URL+"/previous",
     icon: ShoppingCart
   }
 ]
@@ -54,11 +56,11 @@ const navigation = [
 const auth = [
   {
     label: "Login",
-    path: "/frontend/auth/login"
+    path: process.env.REACT_APP_BASE_URL+"/auth/login"
   },
   {
     label: "Register",
-    path: "/frontend/auth/register"
+    path: process.env.REACT_APP_BASE_URL+"/auth/register"
   }
 ]
 
@@ -116,6 +118,22 @@ function Nav(props) {
   )
 }
 
+function _DishesCart(props){
+  return (
+    <Link to={process.env.REACT_APP_BASE_URL+"/cart"}>    
+      <IconButton>
+        <Badge color={"secondary"} badgeContent={props.Cart.items.length}>
+          <ShoppingCart className={props.classes.icon} />
+        </Badge>
+      </IconButton>
+    </Link>
+  )
+}
+const mapCartStateToProps = state => ({
+  Cart: state.Cart
+})
+let DishesCart = connect(mapCartStateToProps, null)(_DishesCart)
+
 export default function PermanentDrawerLeft(props) {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -130,7 +148,7 @@ export default function PermanentDrawerLeft(props) {
             <ListItemText primary={AuthService.getUsername()} />
           </ListItem>
           
-          <Link className={classes.link} to="/frontend/auth/logout">
+          <Link className={classes.link} to={process.env.REACT_APP_BASE_URL+"/auth/logout"}>
             <ListItem button onClick={() => window.location.reload()}>
               <ListItemIcon><ExitToApp /></ListItemIcon>
               <ListItemText primary={'Logout'}/>
@@ -171,11 +189,7 @@ export default function PermanentDrawerLeft(props) {
           <Typography variant="h6" noWrap className={classes.headerText}>
             Street 17
           </Typography>
-          <Link to={process.env.REACT_APP_BASE_URL+"/cart"}>
-            <IconButton>
-              <ShoppingCart className={classes.icon} />
-            </IconButton>
-          </Link>
+          <DishesCart classes={classes}/>
         </Toolbar>
       </AppBar>
       <SwipeableDrawer

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,9 +21,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     minHeight: 100,
     alignItems: 'center'
-  },
-  paper: {
-    padding: theme.spacing(1)
   }
 }))
 
@@ -116,7 +113,7 @@ function Home(props){
 
   let bill = transformData(props.Bill.data)
 
-  console.log(bill)
+  //console.log(bill)
   return (
     <Grid container spacing={2} className={classes.root}>
       <Loading isLoading={props.Bill.isFetching}>

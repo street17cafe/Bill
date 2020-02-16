@@ -6,7 +6,7 @@ const BillsReducer = (state = initialState.Bills, action) => {
       return {
         ...state,
         isFetching: true,
-        error: false
+        error: false,
       }
 
     case "BILLS::SUCCESS":
@@ -22,6 +22,48 @@ const BillsReducer = (state = initialState.Bills, action) => {
         ...state,
         isFetching: false,
         error: true
+      }
+    
+    case "BILLS::REQUEST_FOUND_BILL":
+      return {
+        ...state,
+        isFetchingSpecific: false,
+        error: false,
+        billItems: action.data.items
+      }
+    case "BILLS::SUCCESS_FOUND_BILL":
+      return {
+        ...state,
+        isFetchingSpecific: true,
+        error: false,
+        billItems: []
+      }
+    case "BILLS::FAIL_FOUND_BILL":
+      return {
+        ...state,
+        isFetchingSpecific: false,
+        error: true,
+        billItems: []
+      }
+    case "BILLS::REQUEST_DELETE":
+      return {
+        ...state,
+        deleteRequest: true,
+        errorDeleting: false
+      }
+    case "BILLS::SUCCESS_DELETE":
+      return {
+        ...state,
+        deleteRequest: false,
+        successDeleting: true,
+        errorDeleting: false,
+      }
+    case "BILLS::ERROR_DELETE":
+      return {
+        ...state,
+        deleteRequest: false,
+        successDeleting: false,
+        errorDeleting: true,
       }
     default:
       return state;

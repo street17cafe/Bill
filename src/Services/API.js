@@ -1,7 +1,7 @@
 import axios from 'axios'
 import AuthService from './AuthService'
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL = "http://localhost:8000/"
 export default function fetchAPI(endpoint, payload, headers, method = 'get'){
   const axiosConfig = {
       headers: {

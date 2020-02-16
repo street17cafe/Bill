@@ -33,7 +33,7 @@ function Login(props) {
     })
   }
 
-  console.log(props.Auth)
+  //console.log(props.Auth)
 
   const classes = styles()
   return (

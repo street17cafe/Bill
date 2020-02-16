@@ -4,6 +4,7 @@ import Auth from './auth'
 import Cart from './Cart'
 import Dish from './Dish'
 import Bills from './Bill'
+import Settings from './Settings'
 
 export const initialState = {
   Snackbar: {
@@ -30,7 +31,14 @@ export const initialState = {
   Bills: {
     isFetching: false,
     error: false,
-    data: []
+    data: [],
+    billItems: [],
+    deleteRequest: false,
+    errorDeleting: false
+  },
+  Settings: {
+    autoRefreshBills: false,
+    renderImages: false
   }
 }
 
@@ -39,7 +47,8 @@ const reducers = combineReducers({
   Auth,
   Cart,
   Dish,
-  Bills
+  Bills,
+  Settings
 })
 
 export default reducers;

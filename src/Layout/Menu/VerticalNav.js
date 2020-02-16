@@ -14,6 +14,7 @@ import Add from '@material-ui/icons/Add'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import IconButton from '@material-ui/core/IconButton'
+import Refresh from '@material-ui/icons/Refresh'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Tooltip from '@material-ui/core/Tooltip'
 import Switch from '@material-ui/core/Switch'
@@ -70,6 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
   panel: {
     width: '100%',
+    overflow: 'auto',
     '&> div': {
       padding: window.innerWidth > 500 ? 24 : 8, 
     }
@@ -85,10 +87,11 @@ const useStyles = makeStyles(theme => ({
   switchContainer: {
     display: 'flex',
     width: '100%',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingRight: 16
+    paddingRight: 16,
+    justifyContent: "space-between"
   }
 }));
 
@@ -96,10 +99,18 @@ const ImagesSwitch = props =>{
   const classes = useStyles()
   return (
   <Grid item xs={12} className={classes.switchContainer}>
-    <Tooltip title={'Disable for slow network'}>
-      <Switch onClick={props.onClick} checked={props.checked}/>
-    </Tooltip>
-    <span>Render Images</span>
+    <div>
+      <span>Refresh</span>
+      <IconButton onClick={props.refreshMenu}>
+        <Refresh />
+      </IconButton>
+    </div>
+    <div>
+      <span>Render Images</span>
+      <Tooltip title={'Disable for slow network'}>
+        <Switch onClick={props.onClick} checked={props.checked}/>
+      </Tooltip>
+    </div>
   </Grid>
   )
 }
@@ -155,7 +166,6 @@ function RenderDishDetails(props){
 export default function VerticalTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [imageRender, setImageRender] = React.useState(false)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -177,11 +187,11 @@ export default function VerticalTabs(props) {
         props.data.map((group, index) => 
           <TabPanel value={value} index={index} key={index} className={classes.panel}>
             <Grid container spacing={1} className={classes.container}>
-              <ImagesSwitch checked={imageRender} onClick={() => setImageRender(!imageRender)}/>
+              <ImagesSwitch checked={props.renderImages} onClick={props.flipRender} refreshMenu={props.refreshMenu}/>
               <RenderDishDetails 
                 dishes={group.items} 
                 addClick={id => props.addClick(index, id)}
-                renderImages={imageRender}/>
+                renderImages={props.renderImages}/>
             </Grid>
           </TabPanel>
         )

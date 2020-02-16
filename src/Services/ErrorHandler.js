@@ -4,6 +4,9 @@ export default function ExtractErrorMessage(err) {
   try {
     console.log(err.response.data)
     message = err.response.data.message || err.message
+    if(!err.response.data.success){
+      message = err.response.data.errors.message
+    }
   }catch(err){
     message = "Some error has occured. Try again in sometime"
   }

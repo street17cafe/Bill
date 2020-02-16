@@ -4,9 +4,11 @@ import { Table, Grid, Divider, Typography, Button, TextField, InputAdornment } f
 import { makeStyles } from '@material-ui/core/styles'
 import { GenerateBody, GenerateHead, Row } from './BillItems'
 import API from '../../Services/API'
+import ReactToPrint from 'react-to-print'
 import { snackbarSuccess, snackbarError } from '../../Store/actions/snackbar'
 import { emptyCart } from '../../Store/actions/Cart'
 import { withRouter } from 'react-router-dom'
+import PrintBill from './Print'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,8 +41,6 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto'
   }
 }));
-
-
 
 
 function calculateTotal(data, donation=0, discount=0){
@@ -81,34 +81,55 @@ function calculateTotal(data, donation=0, discount=0){
   ])
 }
 
-function submitBill(items, donation=0, discount=0, props){
-  if(isNaN(donation))
-    donation = 0
-  if(isNaN(discount))
-    discount = 0
-  console.log(items);
-  API('/api/bill', {items, donation, discount}, '', 'POST')
-    .then(res => {
-      console.log(res.data, res.data.success)
-      if(res.data.success){
-        props.emptyCart()
-        props.snackbarSuccess("Bill submitted")
-        props.history.push('/frontend/menu')
+export const AmountSection = props => (
+  <React.Fragment>
+    <Typography variant="h5" className={props.classes.row}>Amount</Typography>
+      {
+        props.rows.map((item, index) => 
+          <React.Fragment  key={index}>
+            <Row label={item.label} value={item.value} classes={props.classes}/>
+            <Divider />
+          </React.Fragment>
+        )
       }
-      console.log(res.data)
-    })
-    .catch(err => {
-      console.log(err.response)
-      props.snackbarError("Unable to save dish")
-    })
-}
+  </React.Fragment>
+)
 
 function Bill(props) {
-
+  let [billId, setBillId] = useState(-1)
   let [donation, setDonation] = useState(0)
   let [discount, setDiscount] = useState(0)
   const classes = useStyles()
   const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
+  const printBillRef = React.useRef()
+
+  function submitBill(items, donation=0, discount=0, props){
+    if(isNaN(donation))
+      donation = 0
+    if(isNaN(discount))
+      discount = 0
+    console.log(items);
+    API('/api/bill', {items, donation, discount}, '', 'POST')
+      .then(res => {
+        console.log(res.data, res.data.success)
+        if(res.data.success){
+          setBillId(res.data.data.message.id)
+          document.querySelector("#print").click()
+          props.emptyCart()
+          props.snackbarSuccess("Bill submitted")
+          props.history.push(process.env.REACT_APP_BASE_URL+'/menu')
+  
+        }
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err.response)
+        props.snackbarError("Unable to save dish")
+      })
+  
+    //Send a printJob
+  
+  }
 
   return (
     <Grid container spacing={2} className={classes.container}>
@@ -157,20 +178,19 @@ function Bill(props) {
       </Grid>
       <Grid item sm={4} xs={12}>
         <div className={classes.root}>
-          <Typography variant="h5" className={classes.row}>Amount</Typography>
-          {
-            rows.map((item, index) => 
-            <React.Fragment  key={index}>
-              <Row label={item.label} value={item.value} classes={classes}/>
-              <Divider />
-            </React.Fragment>
-            )
-          }
+          <AmountSection classes={classes} rows={rows} />
           <div className={classes.row}>
             <Button fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, discount, props)}>Print Bill</Button>
+            <ReactToPrint 
+              trigger={() => <button id="print" style={{display:"none"}}></button>}
+              content={() => printBillRef.current}
+            />
           </div>
         </div>
       </Grid>
+      <div style={{display: "none"}}>
+        <PrintBill ref={printBillRef} rows={rows} _classes={classes} items={props.Cart.items} id={billId}/>
+      </div>
     </Grid>
   )
 

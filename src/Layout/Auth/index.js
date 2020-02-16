@@ -10,18 +10,18 @@ const Logout = (props) => {
   console.log(props)
   AuthService.logOut()
   props.snackbarSuccess("Logged out sucesfully")
-  return <Redirect to={'/frontend/auth/login'} />
+  return <Redirect to={process.env.REACT_APP_BASE_URL+'/auth/login'} />
 }
 
 function Auth(props){ 
   if(AuthService.isLoggedIn() && props.match.params.auth_action !== 'logout'){
-    return <Redirect to={'/frontend'}/>
+    return <Redirect to={process.env.REACT_APP_BASE_URL}/>
   }
   return (
     <React.Fragment>
-      <Route path="/frontend/auth/login" component={Login} />
-      <Route path="/frontend/auth/register" component={Register} />
-      <Route path="/frontend/auth/logout" component={() => <Logout snackbarSuccess={props.snackbarSuccess} />} />
+      <Route path={process.env.REACT_APP_BASE_URL+"/auth/login"} component={Login} />
+      <Route path={process.env.REACT_APP_BASE_URL+"/auth/register"} component={Register} />
+      <Route path={process.env.REACT_APP_BASE_URL+"/auth/logout"} component={() => <Logout snackbarSuccess={props.snackbarSuccess} />} />
     </React.Fragment>
   )
 }

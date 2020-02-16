@@ -14,7 +14,11 @@ const localStorageMiddleware = ({getState}) => { // <--- FOCUS HERE
     return (next) => (action) => {
         const result = next(action);
         localStorage.setItem('reduxState', JSON.stringify(
-            {Cart: getState().Cart}
+            {
+                Cart: getState().Cart,
+                Settings: getState().Settings,
+                Dish: getState().Dish
+            }
         ));
         return result;
     };

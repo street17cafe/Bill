@@ -16,11 +16,13 @@ const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    padding: theme.spacing(3)
+    padding: window.innerWidth > 500 ?theme.spacing(3) : theme.spacing(1)
   },
   buttonHolder: {
     flexDirection: 'row-reverse',
-    display: 'flex'
+    display: 'flex',
+    paddingRight: theme.spacing(1),
+    textDecoration: 'none'
   }
 }));
 
@@ -60,7 +62,7 @@ function Cart(props) {
           );
         })
       }
-      <Link className={classes.buttonHolder} to={'/frontend/bill'}>
+      <Link className={classes.buttonHolder} to={process.env.REACT_APP_BASE_URL+'/bill'}>
         <Button variant="contained" color="primary">Generate Bill</Button>
       </Link>
       </List>
