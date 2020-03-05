@@ -22,8 +22,8 @@
     "build": "react-scripts build && yarn delete-directory && yarn copy-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "delete-directory": "rm -rf ../deploy/frontend/*",
-    "copy-build": "cp -r ./build/* ../deploy/frontend/"
+    "delete-directory": "rm -rf ../backendLumen/public_html/frontend/*",
+    "copy-build": "cp -r ./build/* ../backendLumen/public_html/frontend/"
   },
   "eslintConfig": {
     "extends": "react-app"
