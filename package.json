@@ -19,12 +19,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && yarn delete-directory && yarn copy-build && yarn move-file",
+    "build": "react-scripts build && yarn delete-directory && yarn copy-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "delete-directory": "rm -rf ../backendLumen/public/frontend/*",
-    "copy-build": "cp -r ./build/* ../backendLumen/public/frontend/",
-    "move-file": "cp ./build/index.html ../backendLumen/resources/views/frontend.php"
+    "delete-directory": "rm -rf ../deploy/frontend/*",
+    "copy-build": "cp -r ./build/* ../deploy/frontend/"
   },
   "eslintConfig": {
     "extends": "react-app"
