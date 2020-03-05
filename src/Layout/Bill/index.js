@@ -1,11 +1,13 @@
 import React, {useState} from 'react'
 import {connect} from 'react-redux'
-import { Table, Grid, Divider, Typography, Button, TextField, InputAdornment } from '@material-ui/core'
+import { Table, Grid, Divider, Typography, TextField, InputAdornment } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { GenerateBody, GenerateHead, Row } from './BillItems'
 import API from '../../Services/API'
 import ReactToPrint from 'react-to-print'
-import { snackbarSuccess, snackbarError } from '../../Store/actions/snackbar'
+import LoadingButton from '../../Enhancements/LoadingButton'
+import SelectMenu from '../../Enhancements/SelectMenu'
+import { snackbarSuccess, snackbarError, snackbarWarning } from '../../Store/actions/snackbar'
 import { emptyCart } from '../../Store/actions/Cart'
 import { withRouter } from 'react-router-dom'
 import PrintBill from './Print'
@@ -95,10 +97,38 @@ export const AmountSection = props => (
   </React.Fragment>
 )
 
+function PaymentMethod(props) {
+  let [options, setOptions] = React.useState([])
+  React.useEffect(() => {
+    API('/api/payment', '', '', 'GET')
+      .then(res => {
+        if(res.data.success){
+          console.log(res.data)
+          let data = [{value: -1, label: "Select a payment method"}, ...res.data.data.message.map(item => ({value: item.id, label: item.label}))]
+          
+          setOptions(data)
+          return
+        }
+        throw new Error("Unable to fetch Payment")
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+  }, [])
+
+  return (
+    <div>
+      <SelectMenu value={props.value} options={options} fullWidth onChange={props.onChange}/>
+    </div>
+  )
+}
+
 function Bill(props) {
   let [billId, setBillId] = useState(-1)
+  let [billRequest, setBillRequest] = useState(false)
   let [donation, setDonation] = useState(0)
   let [discount, setDiscount] = useState(0)
+  let [paymentMethod, setPaymentMethod] = useState(-1)
   const classes = useStyles()
   const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
   const printBillRef = React.useRef()
@@ -108,12 +138,17 @@ function Bill(props) {
       donation = 0
     if(isNaN(discount))
       discount = 0
-    console.log(items);
-    API('/api/bill', {items, donation, discount}, '', 'POST')
+    if(paymentMethod === -1){
+      props.snackbarWarning("Please select a payment method")
+      return
+    }
+    setBillRequest(true)
+    API('/api/bill', {items, donation, discount, paymentId: paymentMethod}, '', 'POST')
       .then(res => {
         console.log(res.data, res.data.success)
         if(res.data.success){
           setBillId(res.data.data.message.id)
+          setBillRequest(false)
           document.querySelector("#print").click()
           props.emptyCart()
           props.snackbarSuccess("Bill submitted")
@@ -124,6 +159,7 @@ function Bill(props) {
       })
       .catch(err => {
         console.log(err.response)
+        setBillRequest(false)
         props.snackbarError("Unable to save dish")
       })
   
@@ -174,13 +210,16 @@ function Bill(props) {
               }}
               />
           </div>
+          <div className={classes.row}>
+            <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
+          </div>
         </div>
       </Grid>
       <Grid item sm={4} xs={12}>
         <div className={classes.root}>
           <AmountSection classes={classes} rows={rows} />
           <div className={classes.row}>
-            <Button fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, discount, props)}>Print Bill</Button>
+            <LoadingButton isLoading={billRequest} fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, discount, props)}>Print Bill</LoadingButton>
             <ReactToPrint 
               trigger={() => <button id="print" style={{display:"none"}}></button>}
               content={() => printBillRef.current}
@@ -203,7 +242,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   emptyCart: () => dispatch(emptyCart()),
   snackbarSuccess: (msg) => dispatch(snackbarSuccess(msg)),
-  snackbarError: (msg) => dispatch(snackbarError(msg))
+  snackbarError: (msg) => dispatch(snackbarError(msg)),
+  snackbarWarning: (msg) => dispatch(snackbarWarning(msg))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Bill))

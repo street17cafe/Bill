@@ -44,8 +44,8 @@ const styles = theme => ({
 const Body = props => (
   <TableBody>
     {
-      props.body.map(row => 
-        <TableRow key={row.price}>
+      props.body.map((row, index) => 
+        <TableRow key={index}>
           <TableCell>{row.name}</TableCell>
           <TableCell align="left">{row.quantity} * ₹{row.price}</TableCell>
           <TableCell align="right">₹ {row.price * row.quantity}</TableCell>

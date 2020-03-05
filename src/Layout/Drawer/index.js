@@ -11,7 +11,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Home from '@material-ui/icons/Home'
-import { Icon, IconButton } from '@material-ui/core';
+import { Icon, IconButton, BottomNavigation, BottomNavigationAction } from '@material-ui/core';
 import AuthService from '../../Services/AuthService'
 import Person from '@material-ui/icons/Person'
 import FolderSpecial from '@material-ui/icons/FolderSpecial'
@@ -68,6 +68,11 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     width: "100%"
+  },
+  bottom:{
+    position: "fixed",
+    width: "100%",
+    bottom: 0,
   },
   appBar: {
     width: window.innerWidth > 1000 ? `calc(100% - ${drawerWidth}px)`:`100%`,
@@ -214,7 +219,14 @@ export default function PermanentDrawerLeft(props) {
       <div className={classes.contain}>
         <div className={classes.toolbar} />
         {props.children}
+        <div className={classes.toolbar} />
       </div>
+      {/* <BottomNavigation value={'home'} className={classes.bottom}>
+        <BottomNavigationAction label={'Home'} value={'home'} icon={<Home />}/>
+        <BottomNavigationAction label={'Menu'} value={'menu'} icon={<Restaurant />}/>
+        <BottomNavigationAction label={'Bills'} value={'money'} icon={<AttachMoney />}/>
+        <BottomNavigationAction label={'Previous bill'} value={'shoppingcart'} icon={<ShoppingCart />}/>
+      </BottomNavigation> */}
     </div>
   );
 }

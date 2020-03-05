@@ -4,7 +4,7 @@ import {TextField, FormControl, InputLabel, Select, MenuItem, Typography} from '
 //automatically Generate Form component
 //required
 
-export default function RenderForm(props) {
+function RenderForm(props) {
   switch(props.type){
     case 'text':
     case 'textarea':

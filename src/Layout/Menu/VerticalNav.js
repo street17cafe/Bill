@@ -163,7 +163,7 @@ function RenderDishDetails(props){
   }
 }
 
-export default function VerticalTabs(props) {
+export default React.memo((props) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -198,4 +198,4 @@ export default function VerticalTabs(props) {
       }
     </div>
   );
-}
+})

@@ -63,39 +63,40 @@ class AllDishes extends React.Component {
     })
   }
 
-  onServingSizeChange = e => {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      modal: {
-        ...prevState.modal,
-        value
-      }
-    }))
-  }
+  // onServingSizeChange = e => {
+  //   let value = e.target.value;
+  //   this.setState(prevState => ({
+  //     modal: {
+  //       ...prevState.modal,
+  //       value
+  //     }
+  //   }))
+  // }
 
-  handleQuantityChange = e => {
-    let l = e.target.value
-    this.setState(prevState => ({
-      modal: {
-        ...prevState.modal,
-        quantity: l
-      }
-    }))
-  }
+  // handleQuantityChange = e => {
+  //   let l = e.target.value
+  //   this.setState(prevState => ({
+  //     modal: {
+  //       ...prevState.modal,
+  //       quantity: l
+  //     }
+  //   }))
+  // }
 
-  handleConfirmationSubmit = e => {
+  handleConfirmationSubmit = ({size, quantity}) => {
     //get the item id, size, qunatity
     let price = -1
     this.state.modal.item.serving.forEach(serving => {
       
-      if(serving.size === this.state.modal.value)
+      //if(serving.size === this.state.modal.value)
+      if(serving.size === size)
         price = serving.price
     })
     let item = {
       id: new Date().getTime(),
       _id: this.state.modal.item.id,
-      size: this.state.modal.value,
-      quantity: this.state.modal.quantity,
+      size,
+      quantity,
       name: this.state.modal.item.label,
       price
     }
@@ -116,7 +117,7 @@ class AllDishes extends React.Component {
   }
 
   render = () => {
-    //console.log(this.state)
+    console.log(this.state)
 
     return (
       <Grid container>

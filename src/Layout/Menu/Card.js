@@ -27,7 +27,7 @@ export default function MediaCard(props) {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={"http://localhost:8000"+props.image}
+          image={process.env.REACT_APP_URL+""+props.image}
           title={props.name}
           img={props.image}
         />

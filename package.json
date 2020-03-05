@@ -2,7 +2,7 @@
   "name": "backend_ui",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/frontend",
+  "homepage": "/",
   "dependencies": {
     "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.2.1",
@@ -19,11 +19,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && yarn delete-directory && yarn copy-build",
+    "build": "react-scripts build && yarn delete-directory && yarn copy-build && yarn move-file",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "delete-directory": "rm -rf ../backendLumen/public/frontend/*",
-    "copy-build": "cp -r ./build/* ../backendLumen/public/frontend/"
+    "copy-build": "cp -r ./build/* ../backendLumen/public/frontend/",
+    "move-file": "cp ./build/index.html ../backendLumen/resources/views/frontend.php"
   },
   "eslintConfig": {
     "extends": "react-app"

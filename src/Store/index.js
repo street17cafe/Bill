@@ -1,6 +1,4 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { createLogger } from 'redux-logger';
-import thunk from 'redux-thunk';
 import app from './reducers'
 
 /**
@@ -35,7 +33,7 @@ try{
 }
 
 const configureStore = () => {
-    return createStore(app, persistedStore, composeEnhancers(applyMiddleware(createLogger(), thunk, localStorageMiddleware)));
+    return createStore(app, persistedStore, composeEnhancers(applyMiddleware(localStorageMiddleware)));
 };
 
 export default configureStore;
