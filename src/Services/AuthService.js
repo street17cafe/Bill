@@ -1,18 +1,20 @@
+import store from '../Store'
+
 
 const Auth = {
 
   isLoggedIn: () => {
-    let auth = JSON.parse(localStorage.getItem('auth'))
-    if(auth === null || !auth.isLoggedIn){
+    let token = store.getState().Auth.token
+    if(token === ''){
       return false
     }
     return true
   },
 
   logUserIn: data => {
-
-    localStorage.setItem('auth', JSON.stringify(data))
-    window.location = process.env.REACT_APP_BASE_URL
+    //let history = useHistory()
+    //localStorage.setItem('auth', JSON.stringify(data))
+    //history.push(process.env.REACT_APP_URL)
 
   },
 
@@ -21,19 +23,11 @@ const Auth = {
   },
 
   getToken: () => {
-    let auth = JSON.parse(localStorage.getItem('auth'))
-    if(auth === null || !auth.isLoggedIn){
-      return ''
-    }
-    return auth.token
+    return store.getState().Auth.token
   },
 
   getUsername: () => {
-    let auth = JSON.parse(localStorage.getItem('auth'))
-    if(auth === null || !auth.isLoggedIn){
-      return ''
-    }
-    return auth.username
+    return store.getState().Auth.username
   }
 
 }

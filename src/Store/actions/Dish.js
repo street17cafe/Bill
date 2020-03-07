@@ -9,7 +9,11 @@ export const fetchDishes = (dispatch, data) => {
   API('/api/dish', '', '', 'GET')
     .then(res => {
       //console.log(res)
-      dispatch(requestSuccess(res.data))
+      if(!res.data.success){
+        throw new Error("Unable to fetch dishes")
+      }
+      let data = groupDishes(res.data.data)
+      dispatch(requestSuccess(data))
     })
     .catch(err => {
       console.log(err.response, err)
@@ -19,15 +23,15 @@ export const fetchDishes = (dispatch, data) => {
 }
 
 const groupDishes = (data) => {
-  console.log(data)
+  //console.log(data)
   if(data === undefined)
     return
   let items = {};
   for(let i = 0; i < data.length; i++){
-    if(items[data[i].category_id] === undefined){
-      items[data[i].category_id] = []
+    if(items[data[i].category] === undefined){
+      items[data[i].category] = []
     }
-    items[data[i].category_id].push(data[i])
+    items[data[i].category].push(data[i])
   }
 
   let processed = []
@@ -37,7 +41,7 @@ const groupDishes = (data) => {
       items: items[item]
     })
   }
-
+  //console.log(processed)
   return processed
 }
 
@@ -45,11 +49,15 @@ const initDishFetch = () => ({
   type: page+"REQUEST"
 })
 
-const requestSuccess = (res) => ({
+const requestSuccess = (data) => ({
   type: page+"SUCCESS",
-  data: groupDishes(res.data)
+  data: data
 })
 
 const requestFailure = () => ({
   type: page+"FAIL"
+})
+
+export const emptyMenu = () => ({
+  type: page+"EMPTY"
 })

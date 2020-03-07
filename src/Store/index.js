@@ -15,7 +15,8 @@ const localStorageMiddleware = ({getState}) => { // <--- FOCUS HERE
             {
                 Cart: getState().Cart,
                 Settings: getState().Settings,
-                Dish: getState().Dish
+                Dish: getState().Dish,
+                Auth: getState().Auth
             }
         ));
         return result;
@@ -32,8 +33,8 @@ try{
     console.log("Unable to read store from localstorage", err)
 }
 
-const configureStore = () => {
-    return createStore(app, persistedStore, composeEnhancers(applyMiddleware(localStorageMiddleware)));
-};
+const store = createStore(app, persistedStore, composeEnhancers(applyMiddleware(localStorageMiddleware)));
 
-export default configureStore;
+// const store = configureStore()
+
+export default store;

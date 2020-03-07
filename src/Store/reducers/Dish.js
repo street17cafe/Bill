@@ -21,6 +21,11 @@ const DishReducer = (state = initialState.Dish, action) => {
           isFetching: false,
           error: true
         }
+      case "DISH::EMPTY":
+        return {
+          ...state,
+          data: []
+        }
       default:
         return state;
     }

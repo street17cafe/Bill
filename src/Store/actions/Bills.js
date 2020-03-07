@@ -39,6 +39,7 @@ export function fetchSpecific(dispatch, id){
       if(!res.data.success){
         throw new Error("Error fetching results")
       }
+      console.log(res.data)
       dispatch(specificBillFetched(res.data.data))
     })
     .catch(err => {
@@ -48,16 +49,16 @@ export function fetchSpecific(dispatch, id){
 }
 
 const specificBillFetched = data => ({
-  type: "BILLS::REQUEST_FOUND_BILL",
+  type: "BILLS::SUCCESS_FIND_BILL",
   data
 })
 
 const initRequestSpecific = () => ({
-  type: "BILLS::SUCCESS_FOUND_BILL"
+  type: "BILLS::REQUEST_FIND_BILL"
 })
 
 const requestFailSpecific = () => ({
-  type: "BILLS::FAIL_FOUND_BILL"
+  type: "BILLS::FAIL_FIND_BILL"
 })
 
 

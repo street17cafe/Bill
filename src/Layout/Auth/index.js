@@ -7,7 +7,6 @@ import {connect} from 'react-redux'
 import { snackbarSuccess } from '../../Store/actions/snackbar'
 
 const Logout = (props) => {
-  console.log(props)
   AuthService.logOut()
   props.snackbarSuccess("Logged out sucesfully")
   return <Redirect to={process.env.REACT_APP_BASE_URL+'/auth/login'} />

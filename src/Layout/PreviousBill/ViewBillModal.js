@@ -77,7 +77,7 @@ export default function ViewBillModal(props){
           </DialogContentText>
           <Grid container>    
             
-            <Grid item xs={12} sm={6} className={classes.dishDetails}>
+            <Grid item xs={12} className={classes.dishDetails}>
               <Loading isLoading={props.loading}>
                 <List className={classes.list}>
                 {
@@ -88,7 +88,7 @@ export default function ViewBillModal(props){
                 </List>
               </Loading>
             </Grid>  
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Row classes={classes} label={'Amount'} value={props.bill.amount}/>
               <Row classes={classes} label={'Tax'} value={props.bill.tax}/>
               <Row classes={classes} label={'Total'} value={+props.bill.amount + +props.bill.tax}/>

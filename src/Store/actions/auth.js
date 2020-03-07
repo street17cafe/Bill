@@ -1,68 +1,62 @@
+import API from '../../Services/API'
 import { snackbarSuccess, snackbarError } from './snackbar'
-import fetchAPI from '../../Services/API'
-import Auth from '../../Services/AuthService'
-import ErrorHandler from '../../Services/ErrorHandler'
+import errorutil from '../../Services/ErrorHandler'
+import { emptyCart } from './Cart'
+import { emptyMenu } from './Dish'
 
-
-const PAGE = "AUTH::"
+const page = "AUTH::"
 
 export const login = (dispatch, data) => {
-  dispatch(initiateLogin(data))
-  fetchAPI('/api/auth/login', data, '', 'POST')
+
+  API('/api/auth/login', data, '', 'POST')
     .then(res => {
-      console.log(res.data)
-      if(res.data.success === false){
-        throw new Error({message: "Unable to login"})
-      }else{
-        console.log("Data: ", res.data)
-        Auth.logUserIn({
+      if(res.data.success){
+        dispatch(snackbarSuccess("Logged in"))
+        return dispatch({
+          type: page+"LOGIN_SUCCESS",
           username: data.username,
-          token: res.data.data.token,
-          isLoggedIn: true
+          token: res.data.data.token
         })
-        dispatch(snackbarSuccess("Logged In"))
-        dispatch(loggedIn(res.data))
-        console.log(res.data)
+        
       }
+      throw new Error("Unable to login")
     })
     .catch(err => {
-      console.error(err)
-      //console.log(err.response.data.message)
-      dispatch(snackbarError(ErrorHandler(err)))
-      dispatch(error())
+      console.log(err.response)
+      dispatch({
+        type: page+"LOGIN_FAIL"
+      })
+      dispatch(snackbarError(errorutil(err)))
     })
+
+  return ({
+    type: "AUTH::LOGIN_REQUEST"
+  })
 }
 
-const initiateLogin = (data) => ({
-    type: PAGE+"LOGIN",
-    data
-  }
-)
-
-const loggedIn = (data) => ({
-  type: PAGE+"SUCCESS",
-  data
-})
-
-const error = data => ({
-  type: PAGE+"ERROR"
-})
+export const logout = (dispatch) => {
+  dispatch(emptyCart())
+  dispatch(emptyMenu())
+  return({
+    type: page+"LOGOUT"
+  })
+}
 
 export const register = (dispatch, data) => {
   dispatch(initiateRegister(data))
-  fetchAPI('/api/auth/register', data, '', 'POST')
+  API('/api/auth/register', data, '', 'POST')
     .then(res => {
       console.log(res.data)
       if(res.data.token === undefined){
         throw new Error({message: "Unable to register"})
       }else{
-        dispatch(loggedIn(res.data))
+        //dispatch(loggedIn(res.data))
         console.log("Data: ", res.data)
-        Auth.logUserIn({
-          username: data.username,
-          token: res.data.token,
-          isLoggedIn: true
-        })
+        // Auth.logUserIn({
+        //   username: data.username,
+        //   token: res.data.token,
+        //   isLoggedIn: true
+        // })
         dispatch(snackbarSuccess("Registartion successfull"))
       }
     })
@@ -75,7 +69,7 @@ export const register = (dispatch, data) => {
 }
 
 const initiateRegister = (data) => ({
-    type: PAGE+"REGISTER",
+    type: page+"REGISTER",
     data
   }
 )

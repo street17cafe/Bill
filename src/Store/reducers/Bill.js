@@ -24,21 +24,20 @@ const BillsReducer = (state = initialState.Bills, action) => {
         error: true
       }
     
-    case "BILLS::REQUEST_FOUND_BILL":
+    case "BILLS::REQUEST_FIND_BILL":
+      return {
+        ...state,
+        isFetchingSpecific: true,
+        error: false,
+      }
+    case "BILLS::SUCCESS_FIND_BILL":
       return {
         ...state,
         isFetchingSpecific: false,
         error: false,
         billItems: action.data.items
       }
-    case "BILLS::SUCCESS_FOUND_BILL":
-      return {
-        ...state,
-        isFetchingSpecific: true,
-        error: false,
-        billItems: []
-      }
-    case "BILLS::FAIL_FOUND_BILL":
+    case "BILLS::FAIL_FIND_BILL":
       return {
         ...state,
         isFetchingSpecific: false,

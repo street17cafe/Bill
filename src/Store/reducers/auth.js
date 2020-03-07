@@ -2,42 +2,38 @@ import { initialState } from './index'
 
 const AuthReducer = (state = initialState.Auth, action) => {
   switch(action.type){
-    case "AUTH::LOGIN":
+
+    case "AUTH::LOGIN_REQUEST":
       return {
         ...state,
-        error: '',
-        isChecking: true,
-        username: action.data.username
-      }
-
-    
-    case "AUTH::REGISTER": 
-      return {
-        isChecking: true,
-        username: action.data.username,
-        ...state
+        isRequesting: true
       }
     
-
-    case "AUTH::SUCCESS":
+    case "AUTH::LOGIN_SUCCESS":
       return {
         ...state,
-        isChecking: false,
-        token: action.data.token,
-        error: '',
-        isLoggedIn: true
+        isRequesting: false,
+        token: action.token,
+        username: action.username
       }
     
-    case "AUTH::ERROR":
+    case "AUTH::LOGIN_FAIL":
       return {
         ...state,
-        isLoggedIn:false,
-        isChecking: false,
-        token: "",
+        isRequesting: false,
+        error: true
       }
 
-    default:
-      return state;
+    case "AUTH::LOGOUT":
+      return {
+        ...state,
+        token: '',
+        username: ''
+      }
+
+    default: 
+      return state
+
   }
 }
 

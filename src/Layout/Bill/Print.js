@@ -31,7 +31,6 @@ const styles = theme => ({
   billId: {
     textAlign: 'center',
     fontSize: 24,
-    textAlign: 'center',
     margin: 0
   },
   container: {

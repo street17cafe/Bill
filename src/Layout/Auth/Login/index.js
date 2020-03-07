@@ -4,6 +4,7 @@ import LoadingButton from '../../../Enhancements/LoadingButton'
 import { makeStyles } from '@material-ui/core/styles'
 import { login } from '../../../Store/actions/auth'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 const styles = makeStyles(theme => ({  
   root: {
@@ -23,7 +24,7 @@ function Login(props) {
 
   let [username, setUsername] = useState('')
   let [password, setPassword] = useState('')
-
+  const classes = styles()
 
   function onSubmit(e){
     e.preventDefault()
@@ -33,9 +34,12 @@ function Login(props) {
     })
   }
 
-  //console.log(props.Auth)
+  if(props.Auth.token !== ""){
+    console.log("COnsole.log now must be redirected", process.env.REACT_APP_PATH)
+    return <Redirect to={process.env.REACT_APP_BASE_URL+"/"} />
+  }
 
-  const classes = styles()
+  //console.log(props.Auth)
   return (
     <Grid container className={classes.root}justify={'center'}>
       <Grid item>
