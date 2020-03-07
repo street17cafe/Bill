@@ -112,7 +112,7 @@ function SideNav(props) {
       
       if(item.to === "/")
         return
-      if(window.location.href.indexOf(item.path) !== -1){
+      if(window.location.pathname.indexOf(item.path) !== -1){
         activeIndex = index
       }
     })
