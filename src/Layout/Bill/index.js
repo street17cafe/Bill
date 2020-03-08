@@ -11,6 +11,7 @@ import { snackbarSuccess, snackbarError, snackbarWarning } from '../../Store/act
 import { emptyCart } from '../../Store/actions/Cart'
 import { withRouter } from 'react-router-dom'
 import PrintBill from './Print'
+import VerifyCoupon from './VerifyCoupon'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -212,6 +213,9 @@ function Bill(props) {
           </div>
           <div className={classes.row}>
             <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
+          </div>
+          <div className={classes.row}>
+            <VerifyCoupon />
           </div>
         </div>
       </Grid>
