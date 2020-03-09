@@ -44,18 +44,18 @@ function VerifyCoupon(props) {
   let [value, setValue] = React.useState("")
   let [loading, setLoading] = React.useState(false);
   let [message, setMessage] = React.useState({type: "info", message: "Apply coupon to get discount"});
-
-  function verifyVoucher(props) {
-    setLoading(true)
+  function verifyVoucher() {
+    setLoading(true)  
     API('/api/vouchers/validate', {voucherCode: value}, '', 'POST')
       .then(res => {
         setLoading(false)
         if(res.data.success){
-          props.updateVoucher(value);
+          props.update(value);
           setMessage({type: "success", message: res.data.data.message})
         }
       })
       .catch(err => {
+        console.log(err)
         setLoading(false)
         setMessage({type: "error", message: ErrorUtil(err)})
       })

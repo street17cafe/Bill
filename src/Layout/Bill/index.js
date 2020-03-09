@@ -130,15 +130,11 @@ function Bill(props) {
   let [billRequest, setBillRequest] = useState(false)
   let [donation, setDonation] = useState(0)
   let [discount, setDiscount] = useState(0)
-  let [voucher, setVoucher] = React.useState("")
+  let [voucher, setVoucher] = useState("")
   let [paymentMethod, setPaymentMethod] = useState(-1)
   const classes = useStyles()
   const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
   const printBillRef = React.useRef()
-
-  function updateVoucher(val){
-    setVoucher(val);
-  }
 
   function submitBill(items, donation=0, discount=0, props){
     if(isNaN(donation))
@@ -184,6 +180,7 @@ function Bill(props) {
     //Send a printJob
   
   }
+
 
   return (
     <Grid container spacing={2} className={classes.container}>
@@ -232,7 +229,7 @@ function Bill(props) {
             <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
           </div>
           <div className={classes.row}>
-            <VerifyCoupon updateVoucher={updateVoucher}/>
+            <VerifyCoupon update={val => setVoucher(val)} />
           </div>
         </div>
       </Grid>
