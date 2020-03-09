@@ -47,11 +47,11 @@ function VerifyCoupon(props) {
 
   function verifyVoucher(props) {
     setLoading(true)
-    API('/api/vouchers/redeem', {voucherCode: value}, '', 'POST')
+    API('/api/vouchers/validate', {voucherCode: value}, '', 'POST')
       .then(res => {
         setLoading(false)
         if(res.data.success){
-          console.log(res.data)
+          props.updateVoucher(value);
           setMessage({type: "success", message: res.data.data.message})
         }
       })

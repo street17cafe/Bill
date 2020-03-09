@@ -12,6 +12,7 @@ import { emptyCart } from '../../Store/actions/Cart'
 import { withRouter } from 'react-router-dom'
 import PrintBill from './Print'
 import VerifyCoupon from './VerifyCoupon'
+import ErrorUtil from '../../Services/ErrorHandler'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,10 +130,15 @@ function Bill(props) {
   let [billRequest, setBillRequest] = useState(false)
   let [donation, setDonation] = useState(0)
   let [discount, setDiscount] = useState(0)
+  let [voucher, setVoucher] = React.useState("")
   let [paymentMethod, setPaymentMethod] = useState(-1)
   const classes = useStyles()
   const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
   const printBillRef = React.useRef()
+
+  function updateVoucher(val){
+    setVoucher(val);
+  }
 
   function submitBill(items, donation=0, discount=0, props){
     if(isNaN(donation))
@@ -146,7 +152,7 @@ function Bill(props) {
     setBillRequest(true)
     API('/api/bill', {items, donation, discount, paymentId: paymentMethod}, '', 'POST')
       .then(res => {
-        console.log(res.data, res.data.success)
+        //console.log(res.data, res.data.success)
         if(res.data.success){
           setBillId(res.data.data.message.id)
           setBillRequest(false)
@@ -156,14 +162,25 @@ function Bill(props) {
           props.history.push(process.env.REACT_APP_BASE_URL+'/menu')
   
         }
-        console.log(res.data)
+        //console.log(res.data)
       })
       .catch(err => {
-        console.log(err.response)
+        //console.log(err.response)
         setBillRequest(false)
-        props.snackbarError("Unable to save dish")
+        props.snackbarError(ErrorUtil(err))
       })
-  
+    API('/api/vouchers/redeem', {voucherCode: voucher}, '', 'POST')
+      .then(res => {
+        if(!res.data.success){
+          //props.updateVoucher(value);
+          //setMessage({type: "success", message: res.data.data.message})
+          throw new Error({message: "Unable to apply voucher"})
+        }
+      })
+      .catch(err => {
+        //setLoading(false)
+        props.snackbarWarning(ErrorUtil(err))
+      })
     //Send a printJob
   
   }
@@ -215,7 +232,7 @@ function Bill(props) {
             <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
           </div>
           <div className={classes.row}>
-            <VerifyCoupon />
+            <VerifyCoupon updateVoucher={updateVoucher}/>
           </div>
         </div>
       </Grid>
