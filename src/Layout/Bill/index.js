@@ -47,8 +47,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function calculateTotal(data, donation=0, discount=0){
+function calculateTotal(data, donation=0, discount=0, flatDiscount=0){
   let total = 0
+  if(isNaN(flatDiscount))
+    flatDiscount = 0
   if(isNaN(donation))
     donation = 0
   if(isNaN(discount))
@@ -56,7 +58,8 @@ function calculateTotal(data, donation=0, discount=0){
   if(data === undefined || data.length === 0)
     return []
   data.forEach(item => total+=(item.price * item.quantity))
-  console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, donation, (Math.round(total * discount)/100))
+  total-=flatDiscount
+  //console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, donation, (Math.round(total * discount)/100))
   return ([
     {
       label: 'SubTotal',
@@ -77,6 +80,10 @@ function calculateTotal(data, donation=0, discount=0){
     {
       label: 'Discount',
       value: discount+'%'
+    },
+    {
+      label: 'Flat discount',
+      value: flatDiscount
     },
     {
       label: 'Total',
@@ -105,9 +112,8 @@ function PaymentMethod(props) {
     API('/api/payment', '', '', 'GET')
       .then(res => {
         if(res.data.success){
-          console.log(res.data)
-          let data = [{value: -1, label: "Select a payment method"}, ...res.data.data.message.map(item => ({value: item.id, label: item.label}))]
-          
+          //console.log(res.data)
+          let data = [{value: 0, label: "Select a payment method"}, ...res.data.data.message.map(item => ({value: item.id, label: item.label}))]
           setOptions(data)
           return
         }
@@ -125,28 +131,48 @@ function PaymentMethod(props) {
   )
 }
 
+const BillTable = React.memo(({classes, items, ...props}) => {
+  return (
+    <Table className={classes.table}>
+      <caption>Dishes selected for the order</caption>
+      <GenerateHead head={['Sl no', 'Dish', 'Price', 'Quanity', 'Total']} classes={classes}/>
+      <GenerateBody body={items}/>
+    </Table>
+  )
+})
+
 function Bill(props) {
   let [billId, setBillId] = useState(-1)
   let [billRequest, setBillRequest] = useState(false)
   let [donation, setDonation] = useState(0)
   let [discount, setDiscount] = useState(0)
   let [voucher, setVoucher] = useState("")
-  let [paymentMethod, setPaymentMethod] = useState(-1)
+  let [paymentMethod, setPaymentMethod] = useState(0)
+  let [flatDiscount, setFlatDiscount] = useState(0)
   const classes = useStyles()
   const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
   const printBillRef = React.useRef()
 
-  function submitBill(items, donation=0, discount=0, props){
+  function submitBill(items, donation=0, discount=0){
     if(isNaN(donation))
       donation = 0
     if(isNaN(discount))
       discount = 0
+    if(isNaN(flatDiscount))
+      flatDiscount = 0
+    if(flatDiscount > 0  && discount > 0){
+      props.snackbarWarning("You can't have discount and flat off. Use just one offer")
+      return
+    }
     if(paymentMethod === -1){
       props.snackbarWarning("Please select a payment method")
       return
     }
+    if(discount > 100) {
+      return props.snackbarWarning("Bro! Do the math. Discount can't be more than 100%")
+    }
     setBillRequest(true)
-    API('/api/bill', {items, donation, discount, paymentId: paymentMethod}, '', 'POST')
+    API('/api/bill', {items, donation, discount, paymentId: paymentMethod, voucherCode: voucher, flatDiscount}, '', 'POST')
       .then(res => {
         //console.log(res.data, res.data.success)
         if(res.data.success){
@@ -155,30 +181,15 @@ function Bill(props) {
           document.querySelector("#print").click()
           props.emptyCart()
           props.snackbarSuccess("Bill submitted")
-          props.history.push(process.env.REACT_APP_BASE_URL+'/menu')
-  
+          props.history.push(process.env.REACT_APP_BASE_URL+'/menu')  
         }
         //console.log(res.data)
       })
       .catch(err => {
-        //console.log(err.response)
+          //console.log(err.response)
         setBillRequest(false)
         props.snackbarError(ErrorUtil(err))
       })
-    API('/api/vouchers/redeem', {voucherCode: voucher}, '', 'POST')
-      .then(res => {
-        if(!res.data.success){
-          //props.updateVoucher(value);
-          //setMessage({type: "success", message: res.data.data.message})
-          throw new Error({message: "Unable to apply voucher"})
-        }
-      })
-      .catch(err => {
-        //setLoading(false)
-        props.snackbarWarning(ErrorUtil(err))
-      })
-    //Send a printJob
-  
   }
 
 
@@ -186,58 +197,76 @@ function Bill(props) {
     <Grid container spacing={2} className={classes.container}>
       <Grid item xs={12} sm={8}>
         <div className={classes.root}>
-          <Table className={classes.table}>
-          <caption>Dishes selected for the order</caption>
-            <GenerateHead head={['Sl no', 'Dish', 'Price', 'Quanity', 'Total']} classes={classes}/>
-            <GenerateBody body={props.Cart.items}/>
-          </Table>
-          <div className={classes.row}>
-            <TextField 
-              label={'Wish to donate for a cause'} 
-              type="number" 
-              fullWidth 
-              value={donation} 
-              autoFocus={true}
-              onChange={(e) => setDonation(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    ₹
-                  </InputAdornment>
-                ),
-              }}
-              />
-          </div>
-          <div className={classes.row}>
-            <TextField 
-              label={'Discount percentage'} 
-              type="number" 
-              fullWidth 
-              value={discount} 
-              autoFocus={true}
-              onChange={(e) => setDiscount(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    %
-                  </InputAdornment>
-                ),
-              }}
-              />
-          </div>
-          <div className={classes.row}>
-            <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
-          </div>
-          <div className={classes.row}>
-            <VerifyCoupon update={val => setVoucher(val)} />
-          </div>
+          <BillTable classes={classes} items={props.Cart.items} />
+          <Grid container>
+            
+            <Grid item xs={12} sm={6} className={classes.row}>
+              <TextField 
+                label={'Flat discount'} 
+                type="number" 
+                fullWidth 
+                value={flatDiscount}
+                onChange={(e) => setFlatDiscount(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      ₹
+                    </InputAdornment>
+                  ),
+                }}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6} className={classes.row}>
+              <TextField 
+                label={'Discount percentage'} 
+                type="number" 
+                fullWidth 
+                value={discount}
+                onChange={(e) => setDiscount(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      %
+                    </InputAdornment>
+                  ),
+                }}
+                />
+            </Grid>
+            <Grid item xs={12} className={classes.row}>
+              <PaymentMethod value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}/>
+            </Grid>
+            <Grid item xs={12} className={classes.row}>
+              <VerifyCoupon update={val => setVoucher(val)} />
+            </Grid>
+            <Grid item xs={12} className={classes.row}>
+              <TextField 
+                label={'Wish to donate for a cause'} 
+                type="number" 
+                fullWidth 
+                value={donation}
+                onChange={(e) => setDonation(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      ₹
+                    </InputAdornment>
+                  ),
+                }}
+                />
+            </Grid>
+          </Grid>
         </div>
       </Grid>
       <Grid item sm={4} xs={12}>
         <div className={classes.root}>
           <AmountSection classes={classes} rows={rows} />
           <div className={classes.row}>
-            <LoadingButton isLoading={billRequest} fullWidth variant="contained" color="primary" onClick={() => submitBill(props.Cart.items, donation, discount, props)}>Print Bill</LoadingButton>
+            <LoadingButton 
+              isLoading={billRequest} 
+              fullWidth 
+              variant="contained" 
+              color="primary" 
+              onClick={() => submitBill(props.Cart.items, donation, discount, flatDiscount)}>Print Bill</LoadingButton>
             <ReactToPrint 
               trigger={() => <button id="print" style={{display:"none"}}></button>}
               content={() => printBillRef.current}
