@@ -17,7 +17,7 @@ export const initialState = {
     isLoggedIn: true,
     errorMessage: '',
     username: '',
-    isChecking: false,
+    isRequesting: false,
     token: ''
   },
   Cart: {

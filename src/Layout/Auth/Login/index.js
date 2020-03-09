@@ -65,7 +65,7 @@ function Login(props) {
             />
           </FormControl>
           <FormControl fullWidth>
-            <LoadingButton fullWidth isLoading={props.Auth.isChecking} type="submit" variant="contained" color="primary">Log in</LoadingButton>
+            <LoadingButton fullWidth isLoading={props.Auth.isRequesting} type="submit" variant="contained" color="primary">Log in</LoadingButton>
           </FormControl>
         </Paper>
       </Grid>
@@ -78,7 +78,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  login: (data) => login(dispatch, data)
+  login: (data) => dispatch(login(dispatch, data))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
