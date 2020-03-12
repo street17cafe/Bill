@@ -59,6 +59,9 @@ function calculateTotal(data, donation=0, discount=0, flatDiscount=0){
     return []
   data.forEach(item => total+=(item.price * item.quantity))
   total-=flatDiscount
+  if(total < 0) {
+    total = 0
+  }
   //console.log( Math.round(2 * total * 2.5)/100 + donation - (Math.round(total * discount)/100), total, donation, (Math.round(total * discount)/100))
   return ([
     {
@@ -150,7 +153,7 @@ function Bill(props) {
   let [paymentMethod, setPaymentMethod] = useState(0)
   let [flatDiscount, setFlatDiscount] = useState(0)
   const classes = useStyles()
-  const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount))
+  const rows = calculateTotal(props.Cart.items, parseInt(donation), parseInt(discount), flatDiscount)
   const printBillRef = React.useRef()
 
   function submitBill(items, donation=0, discount=0){
@@ -164,7 +167,7 @@ function Bill(props) {
       props.snackbarWarning("You can't have discount and flat off. Use just one offer")
       return
     }
-    if(paymentMethod === -1){
+    if(paymentMethod === 0){
       props.snackbarWarning("Please select a payment method")
       return
     }

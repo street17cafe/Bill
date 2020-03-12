@@ -8,11 +8,12 @@ import List from '@material-ui/core/List'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
+//import { createMuiTheme } from '@material-ui/core/styles'
 
 
 const styles = makeStyles(theme => ({
   paperStyle: {
-    background: "#fff",
+    background: theme.palette.background.paper,
     position: 'relative',
     borderRadius: 4,
     overflow: 'hidden',
@@ -22,7 +23,7 @@ const styles = makeStyles(theme => ({
 
 function _List({items, ...props}){
   const classes = styles()
-
+  //console.log(createMuiTheme())
   function divider(con, length, index){
     if(con && index < length - 1 ){
       return <Divider />
@@ -34,8 +35,8 @@ function _List({items, ...props}){
   return (
     <List className={props.listClass || classes.paperStyle} subheader={<ListSubheader>{props.heading || ''}</ListSubheader>}>
       {
-        items.map((item, index) => <React.Fragment key={item.id || index}>
-          <ListItem className={props.itemClass || ''} button={props.button} onClick={() => props.itemClick(item, index)} selected={props.selected.indexOf(index) !== -1}>
+        items.map((item, index) => <React.Fragment key={item.id}>
+          <ListItem className={props.itemClass || ''} button={props.button} onClick={() => props.itemClick(item, index)} selected={props.selected.indexOf(item.id) !== -1}>
             {
               item.icon && <ListItemIcon>{item.icon}</ListItemIcon>
             }

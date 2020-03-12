@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
   list: {
     width: '100%',
     boxShadow: theme.shadows[1],
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.background.paper,
     borderRadius: 8,
     position: "relative",
     overflow: "hidden"
@@ -88,7 +88,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.background.paper,
     alignItems: "center",
     paddingRight: 16,
     justifyContent: "space-between"
@@ -187,7 +187,7 @@ export default React.memo((props) => {
         props.data.map((group, index) => 
           <TabPanel value={value} index={index} key={index} className={classes.panel}>
             <Grid container spacing={1} className={classes.container}>
-              <ImagesSwitch checked={props.renderImages} onClick={props.flipRender} refreshMenu={props.refreshMenu}/>
+              
               <RenderDishDetails 
                 dishes={group.items} 
                 addClick={id => props.addClick(index, id)}

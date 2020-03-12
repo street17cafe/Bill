@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import Edit from '@material-ui/icons/Edit'
 import { addItem, emptyCart } from '../../Store/actions/Cart'
-import { flipBillAutoRefresh } from '../../Store/actions/Settings'
 import { connect } from 'react-redux'
 import { fetchBills, fetchSpecific, deleteBill } from '../../Store/actions/Bills'
 import { Table, TableCell, TableHead, TableBody, TableRow, Switch } from '@material-ui/core'
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 4,
     overflow: 'hidden',
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[1]
   },
   settingsContainer: {
@@ -51,26 +50,6 @@ function transformData(bills){
     return a
   })
 }
-
-// const BillsList = props => (
-//   <List subheader={<ListSubheader>Previous Bills</ListSubheader>} className={props.classes.list}>
-//     {
-//       props.bills.map((bill, index) => 
-//         <ListItem key={index}>
-//           <ListItemIcon>
-//             <span>{bill.id}</span>
-//           </ListItemIcon>
-//           <ListItemText primary={'₹'+bill.amount} secondary={bill.time}/>
-//           <ListItemSecondaryAction>
-//             <IconButton onClick={() => props.editBill(bill.id)}>
-//               <Edit />
-//             </IconButton>
-//           </ListItemSecondaryAction>
-//         </ListItem>
-//       )
-//     }
-//   </List>
-// )
 
 const BillsLists = props => (
   <Table className={props.classes.list}>
@@ -121,7 +100,7 @@ function PreviousBill(props) {
   })
 
   React.useEffect(() => {
-    if(props.Bill.data.length < 1 || props.Settings.autoRefreshBills){
+    if(props.Bill.data.length < 1 || props.autoRefreshBills){
       props.fetchBills()
     }
   }, [])
@@ -144,11 +123,11 @@ function PreviousBill(props) {
   }
 
   function successDelete(){
-    console.log("Successfully deleted")
-    console.log(props);
+    //console.log("Successfully deleted")
+    //console.log(props);
     props.emptyCart()
     props.Bill.billItems.map(item => {
-      console.log(item)
+      //console.log(item)
       props.addItem({
         id: new Date().getTime(),
         _id: item.item_id,
@@ -177,12 +156,6 @@ function PreviousBill(props) {
 
   return (
     <Grid container className={classes.root}>
-      
-      <SettingsSection 
-        autoRefresh={props.Settings.autoRefreshBills} 
-        classes={classes}
-        refreshRequest={() => props.fetchBills()}
-        switchChange={() => props.flipBillAutoRefresh()}/>
        
       <Loading isLoading={props.Bill.isFetching}>
         <BillsLists head={['Id', 'Price', 'Time', 'Action']} 
@@ -206,7 +179,7 @@ function PreviousBill(props) {
 
 const mapStateToProps = state => ({
   Bill: state.Bills,
-  Settings: state.Settings
+  autoRefreshBills: state.Settings.autoRefreshBills
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -215,7 +188,6 @@ const mapDispatchToProps = (dispatch) => ({
   addItem: data => dispatch(addItem(data)),
   emptyCart: () => dispatch(emptyCart()),
   deleteBill: (id, callback) => deleteBill(dispatch, id, callback),
-  flipBillAutoRefresh: () => dispatch(flipBillAutoRefresh())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PreviousBill)

@@ -8,6 +8,7 @@ import Cart from './Cart'
 import Home from './Home'
 import Bill from './Bill'
 import PreviousBill from './PreviousBill'
+import Settings from './Settings'
 
 const Layout = props => {
   return (
@@ -18,6 +19,7 @@ const Layout = props => {
         <ProtectedRoute path={process.env.REACT_APP_BASE_URL+"/cart"} component={Cart} />
         <ProtectedRoute path={process.env.REACT_APP_BASE_URL+"/bill"} component={Bill} />
         <ProtectedRoute path={process.env.REACT_APP_BASE_URL+"/previous"} component={PreviousBill} />
+        <ProtectedRoute path={process.env.REACT_APP_BASE_URL+"/settings"} component={Settings} />
         <ProtectedRoute path={process.env.REACT_APP_BASE_URL+"/"} component={Home} exact/>
       </Switch>
     </Drawer>

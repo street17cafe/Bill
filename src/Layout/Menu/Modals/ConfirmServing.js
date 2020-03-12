@@ -58,7 +58,7 @@ export default function ConfirmServing(props){
               <RadioGroupCustom {...props} sizeChange={e => setSize(e.target.value)} value={size}/>
             </Grid>
             <Grid item xs={6}>
-              <TextField label={'Quantity'} onChange={e => setQuantity(e.target.value)} value={quantity}/>
+              <TextField label={'Quantity'} type="number" min={0} onChange={e => setQuantity(e.target.value)} value={quantity}/>
             </Grid>
           </Grid>
         </DialogContent>

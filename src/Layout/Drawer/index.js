@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import Drawer from './Drawer'
 import AppBar from './AppBar';
+import Hidden from '@material-ui/core/Hidden'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,13 +35,17 @@ export default function PermanentDrawerLeft(props) {
       <div className={classes.container}>
         <div className={classes.toolbar} />
           {props.children}
+        <Hidden smUp> 
+          <div className={classes.toolbar} /> 
+          {/* <BottomNavigation value={'home'} className={classes.bottom}>
+          <BottomNavigationAction label={'Home'} value={'home'} icon={<Home />}/>
+          <BottomNavigationAction label={'Menu'} value={'menu'} icon={<Restaurant />}/>
+          <BottomNavigationAction label={'Bills'} value={'money'} icon={<AttachMoney />}/>
+          <BottomNavigationAction label={'Previous bill'} value={'shoppingcart'} icon={<ShoppingCart />}/>
+          </BottomNavigation> */}
+        </Hidden>
       </div>
-      {/* <BottomNavigation value={'home'} className={classes.bottom}>
-        <BottomNavigationAction label={'Home'} value={'home'} icon={<Home />}/>
-        <BottomNavigationAction label={'Menu'} value={'menu'} icon={<Restaurant />}/>
-        <BottomNavigationAction label={'Bills'} value={'money'} icon={<AttachMoney />}/>
-        <BottomNavigationAction label={'Previous bill'} value={'shoppingcart'} icon={<ShoppingCart />}/>
-      </BottomNavigation> */}
+      
     </div>
   );
 }

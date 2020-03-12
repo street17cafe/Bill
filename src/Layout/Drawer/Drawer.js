@@ -31,26 +31,31 @@ const styles = makeStyles(theme => ({
 
 const navigation = [
   {
+    id: 1,
     primaryText: "Home",
     path: process.env.REACT_APP_BASE_URL+"",
     icon: <Home />
   },
   {
+    id: 2,
     primaryText: "Menu",
     path: process.env.REACT_APP_BASE_URL+"/menu",
     icon: <Restaurant />
   },
   {
+    id: 3,
     primaryText: "Special",
     path: process.env.REACT_APP_BASE_URL+"/special",
     icon: <FolderSpecial />
   },
   {
+    id: 4,
     primaryText: "Bill",
     path: process.env.REACT_APP_BASE_URL+"/bill",
     icon: <AttachMoney />
   },
   {
+    id: 5,
     primaryText: "Previous Bills",
     path: process.env.REACT_APP_BASE_URL+"/previous",
     icon: <ShoppingCart />
@@ -59,7 +64,8 @@ const navigation = [
 
 const authItems = {
   loggedIn: [ 
-    {
+    { 
+      id: 11,
       icon: <ExitToApp />,
       path: process.env.REACT_APP_BASE_URL+"/auth/logout",
       primaryText: "Logout"
@@ -67,6 +73,7 @@ const authItems = {
   ],
   loggedOut: [
     {
+      id: 10,
       icon: <Home />,
       path: process.env.REACT_APP_BASE_URL+"/auth/login",
       primaryText: "Login"
@@ -74,50 +81,57 @@ const authItems = {
   ]
 }
 
+function findActiveIndex(){
+  let activeIndex = -1
+  navigation.forEach((item, index) => {
+    
+    if(item.to === "/")
+      return
+    if(window.location.pathname.indexOf(item.path) !== -1){
+      activeIndex = item.id
+    }
+  })
+  return activeIndex;
+}
+
+function makeAuthList(items){
+  if(AuthService.isLoggedIn()){
+    return [
+      {
+        id: 10,
+        icon: <Person />,
+        path: process.env.REACT_APP_BASE_URL+"/settings",
+        primaryText: AuthService.getUsername()
+      },
+      ...items.loggedIn
+    ]
+  }else{
+    return items.loggedOut
+  }
+}
+
 function SideNav(props) {
   const classes = styles()
   let history = useHistory()
 
   function itemClick(item, index) {
+    //console.log(item)
+    props.setDrawerOpen(false)
+    //console.log(item.path, index)
     if(item.path.indexOf("logout") !== -1){
       props.logout()
       history.push(process.env.REACT_APP_BASE_URL+"/auth/login")
       return
     }
-    if(activeIndex === index) {
+    if(activeIndex === item.id) {
       return
     }
-    props.setDrawerOpen(false)
+    //console.log("")
     history.push(item.path)
+    //console.log(item.path)
     //setActiveIndex(index)
   }
-
-  function makeAuthList(items){
-    if(AuthService.isLoggedIn()){
-      return [
-        {
-          icon: <Person />,
-          path: process.env.REACT_APP_BASE_URL+"/settings",
-          primaryText: AuthService.getUsername()
-        },
-        ...items.loggedIn
-      ]
-    }else{
-      return items.loggedOut
-    }
-  }
-  function findActiveIndex(){
-    let activeIndex = -1
-    navigation.forEach((item, index) => {
-      
-      if(item.to === "/")
-        return
-      if(window.location.pathname.indexOf(item.path) !== -1){
-        activeIndex = index
-      }
-    })
-    return activeIndex;
-  }
+  
   let activeIndex = findActiveIndex()
   const authList = makeAuthList(authItems)
 

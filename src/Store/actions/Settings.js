@@ -1,10 +1,17 @@
 const PAGE="SETTINGS::"
 
+export default  {
+  SWITCH_RENDER_IMAGES: PAGE+"SWITCH_RENDER_IMAGES",
+  AUTO_REFRESH_MENU: PAGE+"AUTO_REFRESH_MENU",
+  AUTO_REFRESH_BILLS: PAGE+"AUTO_REFRESH_BILLS",
+  SWITCH_THEME: PAGE+"TOGGLE_THEME",
+  SWITCH_REFRESH_PAYMENTS: PAGE+"AUTO_REFRESH_PAYMENTS"
+}
+
 export const flipBillAutoRefresh = () => ({
   type: PAGE+"FLIP_BILLS_REFRESH"
 })
 
 export function flipRenderImages(){
-  return ({type: PAGE+"FLIP_RENDER_IMAGES"})
-  
+  return ({type: PAGE+"FLIP_RENDER_IMAGES"}) 
 }

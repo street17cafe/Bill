@@ -6,7 +6,6 @@ import VerticalNav from './VerticalNav'
 import { withRouter } from 'react-router-dom'
 import ConfirmServing from './Modals/ConfirmServing'
 import { addItem, removeItem } from '../../Store/actions/Cart'
-import { flipRenderImages } from '../../Store/actions/Settings'
 import Grid from '@material-ui/core/Grid'
 import Loading from '../../Enhancements/Loading'
 
@@ -128,8 +127,6 @@ class AllDishes extends React.Component {
               addClick={this.addClick}
               deleteClick={this.deleteClick}
               renderImages={this.props.Settings.renderImages}
-              flipRender={this.props.flipRenderImages}
-              refreshMenu={() => this.props.fetchDishes()}
             />
             {
               this.state.modal.open && 
@@ -160,8 +157,7 @@ const mapDispatchToProps = dispatch => ({
   snackbarInfo: message => dispatch(snackbarInfo(message)),
   addItem: (item) => dispatch(addItem(item)),
   removeItem: id => dispatch(removeItem(id)),
-  fetchDishes: data => fetchDishes(dispatch, data),
-  flipRenderImages: () => dispatch(flipRenderImages())
+  fetchDishes: data => fetchDishes(dispatch, data)
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllDishes))

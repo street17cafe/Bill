@@ -38,7 +38,10 @@ export const initialState = {
   },
   Settings: {
     autoRefreshBills: false,
-    renderImages: false
+    renderImages: false,
+    dark: false,
+    autoRefreshMenu: false,
+    autoRefreshPayment: false
   }
 }
 
